@@ -1,0 +1,1 @@
+Sistema de gestión de inventario para comercios de indumentaria. Gestión de productos con variantes (talle/color), Kardex transaccional inmutable, control de stock en tiempo real y RBAC. Stack: Python + FastAPI · React + TypeScript · PostgreSQL · Docker.
