@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cyanbox ERP Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#f2f4f6",
+                    "on-primary-fixed-variant": "#004d62",
+                    "on-secondary-fixed": "#101b30",
+                    "error": "#ba1a1a",
+                    "surface": "#f7f9fb",
+                    "on-tertiary-fixed": "#001d36",
+                    "surface-dim": "#d8dadc",
+                    "on-primary-container": "#004254",
+                    "inverse-surface": "#2d3133",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#d1e4ff",
+                    "on-secondary-container": "#5a647c",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed": "#001f29",
+                    "on-tertiary-container": "#243e5a",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-primary": "#5cd4ff",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#47607e",
+                    "surface-bright": "#f7f9fb",
+                    "secondary-fixed-dim": "#bbc6e2",
+                    "secondary-fixed": "#d7e2ff",
+                    "background": "#f7f9fb",
+                    "surface-tint": "#006782",
+                    "primary-fixed-dim": "#5cd4ff",
+                    "on-surface": "#191c1e",
+                    "tertiary-container": "#90a9ca",
+                    "on-surface-variant": "#3d484e",
+                    "inverse-on-surface": "#eff1f3",
+                    "primary": "#006782",
+                    "surface-variant": "#e0e3e5",
+                    "primary-fixed": "#baeaff",
+                    "outline": "#6d797f",
+                    "primary-container": "#00b5e2",
+                    "on-tertiary-fixed-variant": "#2f4865",
+                    "on-secondary-fixed-variant": "#3c475d",
+                    "secondary-container": "#d7e2ff",
+                    "on-tertiary": "#ffffff",
+                    "outline-variant": "#bcc8cf",
+                    "surface-container-highest": "#e0e3e5",
+                    "surface-container-high": "#e6e8ea",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#afc9ea",
+                    "surface-container": "#eceef0",
+                    "on-background": "#191c1e",
+                    "secondary": "#545e76"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "sidebar_width": "260px",
+                    "stack_md": "12px",
+                    "stack_sm": "4px",
+                    "stack_lg": "24px",
+                    "gutter": "24px",
+                    "container_padding": "24px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-xl-mobile": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-xl-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .soft-bloom-shadow {
+            box-shadow: 0px 4px 12px rgba(27, 38, 59, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background">
+<!-- SideNavBar Shell -->
+<aside class="w-[260px] h-screen fixed left-0 top-0 bg-on-secondary-fixed shadow-sm flex flex-col z-50">
+<!-- Brand Header -->
+<div class="p-gutter flex items-center gap-stack_md">
+<div class="w-8 h-8 rounded bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">cloud</span>
+</div>
+<div>
+<h1 class="text-surface-bright font-headline-md text-headline-md font-bold leading-tight">Cyanbox ERP</h1>
+<p class="text-surface-variant opacity-70 font-label-md text-label-md">Enterprise Resource Planning</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="mt-gutter flex-1">
+<a class="flex items-center gap-stack_md px-gutter py-stack_md border-l-4 border-primary bg-on-secondary-fixed-variant text-surface-bright transition-all duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-body-md text-body-md">Home</span>
+</a>
+<a class="flex items-center gap-stack_md px-gutter py-stack_md text-surface-variant opacity-70 hover:bg-on-secondary-fixed-variant hover:opacity-100 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="font-body-md text-body-md">Sales</span>
+</a>
+<a class="flex items-center gap-stack_md px-gutter py-stack_md text-surface-variant opacity-70 hover:bg-on-secondary-fixed-variant hover:opacity-100 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-body-md text-body-md">Products</span>
+</a>
+<a class="flex items-center gap-stack_md px-gutter py-stack_md text-surface-variant opacity-70 hover:bg-on-secondary-fixed-variant hover:opacity-100 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span class="font-body-md text-body-md">Reports</span>
+</a>
+</nav>
+<!-- Footer Profile Hint -->
+<div class="p-gutter border-t border-on-secondary-fixed-variant">
+<div class="flex items-center gap-stack_md">
+<img alt="User" class="w-8 h-8 rounded-full bg-surface-variant" data-alt="A professional studio portrait of a corporate executive in a sharp navy suit, looking confident and approachable. The lighting is soft and high-key with a clean light gray background that perfectly matches a modern enterprise software aesthetic. The image exudes a sense of reliability, intelligence, and professional authority." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvaCqsN5YHgs1iMN0UUi0JiL6SpsKYWwI32Ll0vnmuWb5Sjr67kFvfElyPgl8PdjCHidYUJFPsoGWT2kvUNk6-4FO-GWOOXTnPcM83RGo84uo6bDRzWnB9tNkKD_ERTsWlm8SLoY67nbULtQK1ulDtWY8f1p7l-Xtql0T908egapn4BjNlhmOCC9SEN1UcI7qHddc48D976uFB2vfYeZBCjpWO7LLz3m-AI9IkYWd6ZEFgHeeOvEXQZfSW6AESQxc3Hq1PNK8e3I0"/>
+<div>
+<p class="text-surface-bright font-label-md text-label-md">Alex Rivera</p>
+<p class="text-surface-variant opacity-50 text-[10px]">Admin Access</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Wrapper -->
+<div class="ml-[260px] min-h-screen flex flex-col">
+<!-- TopNavBar Shell -->
+<header class="h-16 fixed top-0 right-0 w-[calc(100%-260px)] bg-surface border-b border-outline-variant flex justify-between items-center px-gutter z-40">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-lg pl-10 py-2 font-body-sm text-body-sm focus:ring-2 focus:ring-primary-container" placeholder="Search resources..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-gutter">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">Dashboard</h2>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="mt-16 p-gutter bg-background flex-1">
+<!-- Top Row: Summary Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-gutter">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest p-gutter rounded-xl soft-bloom-shadow border border-outline-variant">
+<div class="flex justify-between items-start mb-stack_md">
+<div class="p-2 bg-secondary-container rounded-lg">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">payments</span>
+</div>
+<span class="text-primary font-label-md text-label-md bg-primary-fixed px-2 py-0.5 rounded-full">+12.5%</span>
+</div>
+<p class="text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">Total Revenue</p>
+<p class="font-headline-lg text-headline-lg text-on-surface mt-1">$428,500</p>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest p-gutter rounded-xl soft-bloom-shadow border border-outline-variant">
+<div class="flex justify-between items-start mb-stack_md">
+<div class="p-2 bg-secondary-container rounded-lg">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
+</div>
+<span class="text-on-tertiary-container font-label-md text-label-md bg-tertiary-fixed px-2 py-0.5 rounded-full">Active</span>
+</div>
+<p class="text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">Orders</p>
+<p class="font-headline-lg text-headline-lg text-on-surface mt-1">1,240</p>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest p-gutter rounded-xl soft-bloom-shadow border border-outline-variant">
+<div class="flex justify-between items-start mb-stack_md">
+<div class="p-2 bg-secondary-container rounded-lg">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">assignment_late</span>
+</div>
+<span class="text-on-secondary-container font-label-md text-label-md bg-secondary-fixed px-2 py-0.5 rounded-full">14 New</span>
+</div>
+<p class="text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">Pending Tasks</p>
+<p class="font-headline-lg text-headline-lg text-on-surface mt-1">48</p>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest p-gutter rounded-xl soft-bloom-shadow border border-outline-variant">
+<div class="flex justify-between items-start mb-stack_md">
+<div class="p-2 bg-secondary-container rounded-lg">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">group</span>
+</div>
+<span class="text-primary font-label-md text-label-md bg-primary-fixed px-2 py-0.5 rounded-full">Stable</span>
+</div>
+<p class="text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">Active Users</p>
+<p class="font-headline-lg text-headline-lg text-on-surface mt-1">8,922</p>
+</div>
+</div>
+<!-- Middle Row: Sales Overview Chart -->
+<div class="bg-surface-container-lowest p-gutter rounded-xl soft-bloom-shadow border border-outline-variant mb-gutter">
+<div class="flex justify-between items-center mb-gutter">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Sales Overview</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Performance metrics for the current fiscal quarter.</p>
+</div>
+<div class="flex gap-stack_md">
+<button class="px-4 py-2 bg-surface-container rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant transition-colors">Day</button>
+<button class="px-4 py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md">Month</button>
+<button class="px-4 py-2 bg-surface-container rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant transition-colors">Year</button>
+</div>
+</div>
+<!-- Mock Chart Area -->
+<div class="w-full h-[300px] relative mt-4">
+<!-- Grid Lines -->
+<div class="absolute inset-0 flex flex-col justify-between">
+<div class="w-full h-px bg-outline-variant opacity-30"></div>
+<div class="w-full h-px bg-outline-variant opacity-30"></div>
+<div class="w-full h-px bg-outline-variant opacity-30"></div>
+<div class="w-full h-px bg-outline-variant opacity-30"></div>
+<div class="w-full h-px bg-outline-variant opacity-30"></div>
+</div>
+<!-- Chart Vector (Simplified Representation) -->
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 1000 300">
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#00B5E2" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#00B5E2" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<!-- Area Fill -->
+<path d="M0 250 Q 150 200, 250 220 T 500 100 T 750 150 T 1000 50 L 1000 300 L 0 300 Z" fill="url(#chartGradient)"></path>
+<!-- Line -->
+<path d="M0 250 Q 150 200, 250 220 T 500 100 T 750 150 T 1000 50" fill="none" stroke="#00B5E2" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<!-- X-Axis Labels -->
+<div class="absolute bottom-0 left-0 w-full flex justify-between transform translate-y-6">
+<span class="font-label-md text-label-md text-on-surface-variant">Jan</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Feb</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Mar</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Apr</span>
+<span class="font-label-md text-label-md text-on-surface-variant">May</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Jun</span>
+</div>
+</div>
+</div>
+<!-- Bottom Row: Recent Movements Table -->
+<div class="bg-surface-container-lowest rounded-xl soft-bloom-shadow border border-outline-variant overflow-hidden">
+<div class="p-gutter border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-on-surface">Recent Movements</h3>
+<button class="flex items-center gap-stack_sm text-primary font-label-md text-label-md hover:underline">
+                        View All Reports
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-gutter py-4 font-label-md text-label-md text-on-secondary-container uppercase tracking-wider">Date</th>
+<th class="px-gutter py-4 font-label-md text-label-md text-on-secondary-container uppercase tracking-wider">Description</th>
+<th class="px-gutter py-4 font-label-md text-label-md text-on-secondary-container uppercase tracking-wider">Amount</th>
+<th class="px-gutter py-4 font-label-md text-label-md text-on-secondary-container uppercase tracking-wider text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-gutter py-4 font-body-sm text-body-sm text-on-surface">Oct 24, 2023</td>
+<td class="px-gutter py-4 font-body-sm text-body-sm text-on-surface">Bulk Inventory Purchase: SKU-4920</td>
+<td class="px-gutter py-4 font-body-md text-body-md font-semibold text-on-surface">$12,450.00</td>
+<td class="px-gutter py-4 text-right">
+<span class="inline-block px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label-md text-label-md">Completed</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-gutter py-4 font-body-sm text-body-sm text-on-surface">Oct 23, 2023</td>
+<td class="px-gutter py-4 font-body-sm text-body-sm text-on-surface">Service Maintenance: Data Center 4</td>
+<td class="px-gutter py-4 font-body-md text-body-md font-semibold text-on-surface">$3,200.00</td>
+<td class="px-gutter py-4 text-right">
+<span class="inline-block px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">In Progress</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-gutter py-4 font-body-sm text-body-sm text-on-surface">Oct 22, 2023</td>
+<td class="px-gutter py-4 font-body-sm text-body-sm text-on-surface">SaaS Subscription Renewal: Tier 3</td>
+<td class="px-gutter py-4 font-body-md text-body-md font-semibold text-on-surface">$850.00</td>
+<td class="px-gutter py-4 text-right">
+<span class="inline-block px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label-md text-label-md">Completed</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-gutter py-4 font-body-sm text-body-sm text-on-surface">Oct 21, 2023</td>
+<td class="px-gutter py-4 font-body-sm text-body-sm text-on-surface">Logistics Fee: Regional Hub A</td>
+<td class="px-gutter py-4 font-body-md text-body-md font-semibold text-on-surface">$5,400.00</td>
+<td class="px-gutter py-4 text-right">
+<span class="inline-block px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-container font-label-md text-label-md">Pending Verification</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+</div>
+</body></html>
