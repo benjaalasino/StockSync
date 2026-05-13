@@ -5,7 +5,6 @@
 Sistema de gestión de inventario para comercios de indumentaria. Trabajo de campo integrador de **Ingeniería de Software II — IUA 2026**, Grupo 5: Alasino Benjamin, Calvo Tomás, Contreras Joaquín, González Martín.
 
 Repo: https://github.com/benjaalasino/StockSync
-cl
 
 El foco del proyecto no está solo en las funcionalidades sino en la **calidad del software**: métricas de código, plan SQA (IEEE 730), trazabilidad de requerimientos y pruebas automatizadas.
 
