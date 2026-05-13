@@ -6,7 +6,6 @@ Sistema de gestión de inventario para comercios de indumentaria. Trabajo de cam
 
 Repo: https://github.com/benjaalasino/StockSync
 
-
 El foco del proyecto no está solo en las funcionalidades sino en la **calidad del software**: métricas de código, plan SQA (IEEE 730), trazabilidad de requerimientos y pruebas automatizadas.
 
 ---
