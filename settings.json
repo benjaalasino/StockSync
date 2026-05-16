@@ -1,6 +1,2 @@
 {
-    "python.analysis.extraPaths": [
-        "./backend"
-    ],
-    "python.testing.pytestEnabled": true
 }
