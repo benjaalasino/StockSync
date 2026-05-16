@@ -5,7 +5,7 @@ from app.services.stock_service import stock_service
 from app.models.user import User
 from app.models.supplier import Supplier
 from app.models.product import Product, ProductVariant
-from app.models.stock import MovementType
+from app.models.stock import MovementType, PurchaseOrderStatus
 from app.schemas.stock import StockAdjustmentRequest, SaleCreate, SupplierCreate, PurchaseOrderCreate
 
 # ---------------------------------------------------------------------------
@@ -145,7 +145,7 @@ def test_create_purchase_order_success(db):
     
     # 3. ASSERT
     assert order.id is not None
-    assert order.status == "PENDING"  # Al crearse, debe estar pendiente
+    assert order.status == PurchaseOrderStatus.PENDING  # Al crearse, debe estar pendiente
     assert len(order.items) == 1
     assert order.items[0].quantity == 50
 
@@ -168,7 +168,7 @@ def test_receive_purchase_order_success(db):
     
     # 3. ASSERT
     assert received_order.id == order.id
-    assert received_order.status == "RECEIVED"
+    assert received_order.status == PurchaseOrderStatus.RECEIVED
     assert received_order.received_at is not None
     assert stock_service.get_current_stock(db, variant.id) == 20  # El stock debe reflejar la recepción de la orden
     
