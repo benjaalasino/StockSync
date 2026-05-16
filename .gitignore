@@ -23,7 +23,6 @@ frontend/.env
 *.sqlite3
 
 # IDE
-.vscode/
 .idea/
 *.swp
 

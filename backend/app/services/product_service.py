@@ -90,7 +90,7 @@ class ProductService:
         suffix = "-".join(v.value.upper() for v in sorted(values, key=lambda x: x.id))
         return f"{base_sku}-{suffix}"
 
-    # Registra una variante unica (SKU hijo) especifica para un producto determinado.
+    # Registra una variante singular (SKU hijo) especifica para un producto determinado.
     # Internamente llama a _build_sku y valida que esa misma variante no exista.
     def add_variant(self, db: Session, product_id: int, data: VariantCreate) -> ProductVariant:
         product = self.get_product(db, product_id)
