@@ -78,7 +78,9 @@ class ProductService:
     # ---------------------------------------------------------------------------
     # Variants
     # ---------------------------------------------------------------------------
-
+    
+    # El SKU de cada variante se construye concatenando el SKU base del producto padre 
+    # con los valores de los atributos seleccionados, separados por guiones. Ejemplo: "CAMISETA-S-ROJO".
     def _build_sku(self, base_sku: str, attribute_value_ids: list[int], db: Session) -> str:
         values = (
             db.query(AttributeValue)
@@ -88,6 +90,8 @@ class ProductService:
         suffix = "-".join(v.value.upper() for v in sorted(values, key=lambda x: x.id))
         return f"{base_sku}-{suffix}"
 
+    # Registra una variante unica (SKU hijo) especifica para un producto determinado.
+    # Internamente llama a _build_sku y valida que esa misma variante no exista.
     def add_variant(self, db: Session, product_id: int, data: VariantCreate) -> ProductVariant:
         product = self.get_product(db, product_id)
         sku = self._build_sku(product.base_sku, data.attribute_value_ids, db)
@@ -114,6 +118,7 @@ class ProductService:
         db.refresh(variant)
         return variant
 
+    # REQ-F01: Genera automáticamente el producto cartesiano de los atributos.
     def generate_variants(
         self, db: Session, product_id: int, data: GenerateVariantsRequest
     ) -> list[ProductVariant]:
