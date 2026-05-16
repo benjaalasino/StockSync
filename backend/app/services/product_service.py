@@ -25,7 +25,7 @@ class ProductService:
     # ---------------------------------------------------------------------------
 
     def get_categories(self, db: Session) -> list[Category]:
-        return db.query(Category).filter(Category.is_active == True).all()
+        return db.query(Category).filter(Category.is_active).all()
 
     def create_category(self, db: Session, name: str, description: str | None) -> Category:
         existing = db.query(Category).filter(Category.name == name).first()
@@ -42,7 +42,7 @@ class ProductService:
     # ---------------------------------------------------------------------------
 
     def get_products(self, db: Session, skip: int = 0, limit: int = 50) -> list[Product]:
-        return db.query(Product).filter(Product.is_active == True).offset(skip).limit(limit).all()
+        return db.query(Product).filter(Product.is_active).offset(skip).limit(limit).all()
 
     def get_product(self, db: Session, product_id: int) -> Product:
         product = db.query(Product).filter(Product.id == product_id).first()
@@ -78,8 +78,8 @@ class ProductService:
     # ---------------------------------------------------------------------------
     # Variants
     # ---------------------------------------------------------------------------
-    
-    # El SKU de cada variante se construye concatenando el SKU base del producto padre 
+
+    # El SKU de cada variante se construye concatenando el SKU base del producto padre
     # con los valores de los atributos seleccionados, separados por guiones. Ejemplo: "CAMISETA-S-ROJO".
     def _build_sku(self, base_sku: str, attribute_value_ids: list[int], db: Session) -> str:
         values = (
