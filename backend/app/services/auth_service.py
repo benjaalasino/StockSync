@@ -12,7 +12,7 @@ class AuthService:
 
     def authenticate(self, db: Session, email: str, password: str) -> str:
         """Verifica credenciales y retorna un JWT."""
-        user = db.query(User).filter(User.email == email, User.is_active == True).first()
+        user = db.query(User).filter(User.email == email, User.is_active).first()
         if not user or not verify_password(password, user.hashed_password):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -35,7 +35,7 @@ class AuthService:
         return user
 
     def get_users(self, db: Session) -> list[User]:
-        return db.query(User).filter(User.is_active == True).all()
+        return db.query(User).filter(User.is_active).all()
 
 
 auth_service = AuthService()

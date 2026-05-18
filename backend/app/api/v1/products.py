@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.security import get_current_user, require_admin
+from app.models.product import AttributeType, AttributeValue
 from app.schemas.product import (
     AttributeTypeCreate,
     AttributeTypeResponse,
@@ -22,7 +23,6 @@ from app.schemas.product import (
 )
 from app.services.product_service import product_service
 from app.services.stock_service import stock_service
-from app.models.product import AttributeType, AttributeValue
 
 router = APIRouter()
 
