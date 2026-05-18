@@ -3,7 +3,7 @@ REQ-F01: Modelo de Productos con variantes (Producto Padre / SKU Hijo).
 Permite combinaciones dinámicas de atributos como Talle y Color.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import (
     Boolean,
@@ -15,6 +15,7 @@ from sqlalchemy import (
     String,
     Table,
     Text,
+    UniqueConstraint,
 )
 from sqlalchemy.orm import relationship
 
@@ -68,6 +69,9 @@ class AttributeValue(Base):
     """Valor específico de un atributo (S, M, L / Rojo, Azul, etc.)."""
 
     __tablename__ = "attribute_values"
+    __table_args__ = (
+        UniqueConstraint("attribute_type_id", "value", name="uq_attribute_value"),
+    )
 
     id = Column(Integer, primary_key=True, index=True)
     attribute_type_id = Column(
@@ -101,8 +105,8 @@ class Product(Base):
     base_sku = Column(String(50), unique=True, nullable=False, index=True)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     category = relationship("Category", back_populates="products")
     variants = relationship(
@@ -128,7 +132,7 @@ class ProductVariant(Base):
     cost_price = Column(Numeric(10, 2), nullable=True)
     reorder_point = Column(Integer, default=5, nullable=False)  # REQ-F04
     is_active = Column(Boolean, default=True, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
     product = relationship("Product", back_populates="variants")
     attribute_values = relationship(

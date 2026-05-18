@@ -145,3 +145,52 @@ export interface Supplier {
   phone: string | null;
   is_active: boolean;
 }
+
+// ─── Payload types (lo que se envía al backend) ──────────────────────────────
+
+export interface ProductCreatePayload {
+  name: string;
+  description?: string | null;
+  brand?: string | null;
+  base_sku: string;
+  category_id?: number | null;
+}
+
+export interface ProductUpdatePayload {
+  name?: string;
+  description?: string | null;
+  brand?: string | null;
+  category_id?: number | null;
+  is_active?: boolean;
+}
+
+export interface VariantUpdatePayload {
+  sale_price?: number;
+  cost_price?: number | null;
+  reorder_point?: number;
+  is_active?: boolean;
+}
+
+export interface SaleCreatePayload {
+  items: { variant_id: number; quantity: number }[];
+  notes?: string | null;
+}
+
+export interface PurchaseOrderCreatePayload {
+  supplier_id: number;
+  items: { variant_id: number; quantity: number; unit_cost: number }[];
+  notes?: string | null;
+}
+
+export interface SupplierCreatePayload {
+  name: string;
+  contact_name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+}
+
+export interface StockAdjustPayload {
+  variant_id: number;
+  quantity: number;
+  notes: string;
+}

@@ -125,30 +125,48 @@ class ProductService:
         """
         REQ-F01: Genera automáticamente el producto cartesiano de los atributos.
         Ejemplo: [[1,2,3], [4,5]] → 6 variantes (S-Rojo, S-Azul, M-Rojo, ...).
+        Precarga todos los AttributeValues en una sola query para evitar N+1.
         """
         product = self.get_product(db, product_id)
         combinations = list(cartesian_product(*data.attribute_combinations))
+
+        # Precargar todos los valores necesarios en una sola query
+        all_ids = {vid for combo in combinations for vid in combo}
+        values_by_id: dict[int, AttributeValue] = {
+            v.id: v
+            for v in db.query(AttributeValue).filter(AttributeValue.id.in_(all_ids)).all()
+        }
+
+        # Precargar SKUs existentes del producto para evitar queries por combo
+        existing_skus: set[str] = {
+            v.sku
+            for v in db.query(ProductVariant.sku)
+            .filter(ProductVariant.product_id == product_id)
+            .all()
+        }
+
         created = []
-
         for combo in combinations:
-            sku = self._build_sku(product.base_sku, list(combo), db)
-            if db.query(ProductVariant).filter(ProductVariant.sku == sku).first():
-                continue  # Saltar si ya existe
-
-            values = (
-                db.query(AttributeValue)
-                .filter(AttributeValue.id.in_(combo))
-                .all()
+            combo_values = sorted(
+                (values_by_id[vid] for vid in combo if vid in values_by_id),
+                key=lambda x: x.id,
             )
+            suffix = "-".join(v.value.upper() for v in combo_values)
+            sku = f"{product.base_sku}-{suffix}"
+
+            if sku in existing_skus:
+                continue
+
             variant = ProductVariant(
                 product_id=product_id,
                 sku=sku,
                 sale_price=data.base_sale_price,
                 cost_price=data.base_cost_price,
                 reorder_point=data.reorder_point,
-                attribute_values=values,
+                attribute_values=combo_values,
             )
             db.add(variant)
+            existing_skus.add(sku)
             created.append(variant)
 
         db.commit()

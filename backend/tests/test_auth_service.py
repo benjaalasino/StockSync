@@ -10,7 +10,7 @@ def test_create_user_success(db):
     user_data = UserCreate(
         full_name="John Doe",
         email="john@example.com",
-        password="supersecretpassword",
+        password="SuperSecret1",
         role="operator"
     )
 
@@ -21,21 +21,21 @@ def test_create_user_success(db):
     assert user.id is not None
     assert user.email == "john@example.com"
     assert user.full_name == "John Doe"
-    assert user.hashed_password != "supersecretpassword"  # Ensure password was hashed!
+    assert user.hashed_password != "SuperSecret1"  # La contraseña debe estar hasheada
 
 def test_create_user_duplicate_email(db):
     # 1. ARRANGE
     user_data = UserCreate(
         full_name="Jane Doe",
         email="jane@example.com",
-        password="password123",
+        password="Password123",
         role="operator"
     )
-    auth_service.create_user(db, user_data)  # Create the user the first time
+    auth_service.create_user(db, user_data)  # Primera creación
 
     # 2. ACT & 3. ASSERT
     with pytest.raises(HTTPException) as exception_info:
-        auth_service.create_user(db, user_data)  # Try to create it again!
+        auth_service.create_user(db, user_data)  # Segunda creación debe fallar
 
     assert exception_info.value.status_code == 400
     assert exception_info.value.detail == "El email ya está registrado"

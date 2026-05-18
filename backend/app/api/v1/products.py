@@ -91,12 +91,7 @@ def list_products(
     db: Session = Depends(get_db),
     _=Depends(get_current_user),
 ):
-    products = product_service.get_products(db, skip=skip, limit=limit)
-    # Enriquecer con stock actual en cada variante
-    for product in products:
-        for variant in product.variants:
-            variant.current_stock = stock_service.get_current_stock(db, variant.id)
-    return products
+    return stock_service.get_products_with_stock(db, skip=skip, limit=limit)
 
 
 @router.post("/", response_model=ProductResponse, status_code=201)
@@ -114,10 +109,7 @@ def get_product(
     db: Session = Depends(get_db),
     _=Depends(get_current_user),
 ):
-    product = product_service.get_product(db, product_id)
-    for variant in product.variants:
-        variant.current_stock = stock_service.get_current_stock(db, variant.id)
-    return product
+    return stock_service.get_product_with_stock(db, product_id)
 
 
 @router.patch("/{product_id}", response_model=ProductResponse)

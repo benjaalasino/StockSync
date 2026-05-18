@@ -6,7 +6,7 @@ de todos los movimientos (StockMovement) asociados a una variante.
 """
 
 import enum
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import (
     Boolean,
@@ -58,7 +58,7 @@ class StockMovement(Base):
     reference_id = Column(Integer, nullable=True)
 
     notes = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False, index=True)
 
     variant = relationship("ProductVariant", back_populates="stock_movements")
     user = relationship("User", back_populates="stock_movements")
@@ -92,7 +92,7 @@ class PurchaseOrder(Base):
     )
     notes = Column(Text, nullable=True)
     received_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
     supplier = relationship("Supplier", back_populates="purchase_orders")
     created_by_user = relationship("User", back_populates="purchase_orders")
@@ -136,7 +136,7 @@ class Sale(Base):
     created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
     notes = Column(Text, nullable=True)
     is_cancelled = Column(Boolean, default=False, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
     created_by_user = relationship("User")
     items = relationship(
