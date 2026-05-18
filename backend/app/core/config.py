@@ -12,13 +12,13 @@ class Settings(BaseSettings):
     # Base de datos
     DATABASE_URL: str = "postgresql://stocksync:stocksync@db:5432/stocksync"
 
-    # JWT
-    SECRET_KEY: str = "changeme-use-a-strong-secret-in-production"
+    # JWT — SECRET_KEY no tiene default; la app falla al arrancar si no está definida en .env
+    SECRET_KEY: str
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 8  # 8 horas
 
     # CORS
-    CORS_ORIGINS: list[str] = ["http://localhost:5173", "http://localhost:3000"]
+    CORS_ORIGINS: list[str] = ["http://localhost:5173"]
 
     class Config:
         env_file = ".env"

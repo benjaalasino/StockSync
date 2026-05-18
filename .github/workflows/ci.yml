@@ -49,6 +49,8 @@ jobs:
           pip install -r requirements-dev.txt
 
       - name: Run tests with coverage
+        env:
+          SECRET_KEY: "ci-test-secret-key-not-used-in-production"
         run: pytest --cov=app --cov-report=xml --cov-fail-under=60 -v
 
       - name: Upload coverage report

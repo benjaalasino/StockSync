@@ -1,35 +1,35 @@
-/**
- * Cliente HTTP centralizado con Axios.
- * Inyecta el token JWT en cada request autenticado.
- */
-
 import axios from "axios";
 import type {
-  Product,
-  ProductVariant,
-  Category,
   AttributeType,
+  Category,
+  Product,
+  ProductCreatePayload,
+  ProductUpdatePayload,
+  ProductVariant,
+  PurchaseOrder,
+  PurchaseOrderCreatePayload,
+  Sale,
+  SaleCreatePayload,
+  StockAdjustPayload,
+  StockMovement,
+  StockSummary,
+  Supplier,
+  SupplierCreatePayload,
   TokenResponse,
   User,
-  StockSummary,
-  StockMovement,
-  Sale,
-  PurchaseOrder,
-  Supplier,
+  VariantUpdatePayload,
 } from "@/types";
 
 const BASE_URL = "/api/v1";
 
 export const apiClient = axios.create({ baseURL: BASE_URL });
 
-// Inyectar token JWT en cada request
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("access_token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-// Redirigir al login si el token expiró
 apiClient.interceptors.response.use(
   (res) => res,
   (error) => {
@@ -68,11 +68,11 @@ export const productsApi = {
     const { data } = await apiClient.get<Product>(`/products/${id}`);
     return data;
   },
-  create: async (payload: Partial<Product>): Promise<Product> => {
+  create: async (payload: ProductCreatePayload): Promise<Product> => {
     const { data } = await apiClient.post<Product>("/products/", payload);
     return data;
   },
-  update: async (id: number, payload: Partial<Product>): Promise<Product> => {
+  update: async (id: number, payload: ProductUpdatePayload): Promise<Product> => {
     const { data } = await apiClient.patch<Product>(`/products/${id}`, payload);
     return data;
   },
@@ -94,6 +94,10 @@ export const productsApi = {
     );
     return data;
   },
+  updateVariant: async (variantId: number, payload: VariantUpdatePayload): Promise<ProductVariant> => {
+    const { data } = await apiClient.patch<ProductVariant>(`/products/variants/${variantId}`, payload);
+    return data;
+  },
 };
 
 // ─── Categories & Attributes ─────────────────────────────────────────────────
@@ -104,10 +108,7 @@ export const categoriesApi = {
     return data;
   },
   create: async (name: string, description?: string): Promise<Category> => {
-    const { data } = await apiClient.post<Category>("/products/categories", {
-      name,
-      description,
-    });
+    const { data } = await apiClient.post<Category>("/products/categories", { name, description });
     return data;
   },
 };
@@ -123,32 +124,21 @@ export const attributesApi = {
 
 export const stockApi = {
   summary: async (variantId: number): Promise<StockSummary> => {
-    const { data } = await apiClient.get<StockSummary>(
-      `/stock/summary/${variantId}`
-    );
+    const { data } = await apiClient.get<StockSummary>(`/stock/summary/${variantId}`);
     return data;
   },
-  movements: async (variantId: number): Promise<StockMovement[]> => {
+  movements: async (variantId: number, limit = 100, offset = 0): Promise<StockMovement[]> => {
     const { data } = await apiClient.get<StockMovement[]>(
-      `/stock/movements/${variantId}`
+      `/stock/movements/${variantId}?limit=${limit}&offset=${offset}`
     );
     return data;
   },
   lowStockAlerts: async (): Promise<StockSummary[]> => {
-    const { data } = await apiClient.get<StockSummary[]>(
-      "/stock/alerts/low-stock"
-    );
+    const { data } = await apiClient.get<StockSummary[]>("/stock/alerts/low-stock");
     return data;
   },
-  adjust: async (payload: {
-    variant_id: number;
-    quantity: number;
-    notes: string;
-  }): Promise<StockMovement> => {
-    const { data } = await apiClient.post<StockMovement>(
-      "/stock/adjust",
-      payload
-    );
+  adjust: async (payload: StockAdjustPayload): Promise<StockMovement> => {
+    const { data } = await apiClient.post<StockMovement>("/stock/adjust", payload);
     return data;
   },
 };
@@ -156,10 +146,7 @@ export const stockApi = {
 // ─── Sales ───────────────────────────────────────────────────────────────────
 
 export const salesApi = {
-  create: async (payload: {
-    items: { variant_id: number; quantity: number }[];
-    notes?: string;
-  }): Promise<Sale> => {
+  create: async (payload: SaleCreatePayload): Promise<Sale> => {
     const { data } = await apiClient.post<Sale>("/stock/sales", payload);
     return data;
   },
@@ -168,21 +155,12 @@ export const salesApi = {
 // ─── Purchases ───────────────────────────────────────────────────────────────
 
 export const purchasesApi = {
-  create: async (payload: {
-    supplier_id: number;
-    items: { variant_id: number; quantity: number; unit_cost: number }[];
-    notes?: string;
-  }): Promise<PurchaseOrder> => {
-    const { data } = await apiClient.post<PurchaseOrder>(
-      "/stock/purchases",
-      payload
-    );
+  create: async (payload: PurchaseOrderCreatePayload): Promise<PurchaseOrder> => {
+    const { data } = await apiClient.post<PurchaseOrder>("/stock/purchases", payload);
     return data;
   },
   receive: async (orderId: number): Promise<PurchaseOrder> => {
-    const { data } = await apiClient.post<PurchaseOrder>(
-      `/stock/purchases/${orderId}/receive`
-    );
+    const { data } = await apiClient.post<PurchaseOrder>(`/stock/purchases/${orderId}/receive`);
     return data;
   },
 };
@@ -194,8 +172,17 @@ export const suppliersApi = {
     const { data } = await apiClient.get<Supplier[]>("/stock/suppliers");
     return data;
   },
-  create: async (payload: Partial<Supplier>): Promise<Supplier> => {
+  create: async (payload: SupplierCreatePayload): Promise<Supplier> => {
     const { data } = await apiClient.post<Supplier>("/stock/suppliers", payload);
+    return data;
+  },
+};
+
+// ─── Users ───────────────────────────────────────────────────────────────────
+
+export const usersApi = {
+  list: async (): Promise<User[]> => {
+    const { data } = await apiClient.get<User[]>("/users/");
     return data;
   },
 };

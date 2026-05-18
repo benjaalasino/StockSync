@@ -39,11 +39,12 @@ def get_stock_summary(
 def get_movements(
     variant_id: int,
     limit: int = 100,
+    offset: int = 0,
     db: Session = Depends(get_db),
     _=Depends(get_current_user),
 ):
-    """REQ-F02: Historial completo del Kardex de una variante."""
-    return stock_service.get_movements(db, variant_id, limit)
+    """REQ-F02: Historial paginado del Kardex de una variante."""
+    return stock_service.get_movements(db, variant_id, limit=limit, offset=offset)
 
 
 @router.get("/alerts/low-stock", response_model=list[StockSummary])
