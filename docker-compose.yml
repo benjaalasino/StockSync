@@ -29,7 +29,7 @@ services:
       - "8000:8000"
     environment:
       DATABASE_URL: postgresql://stocksync:stocksync@db:5432/stocksync
-      SECRET_KEY: dev-local-secret-32chars-minimum!!
+      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set}
       DEBUG: "true"
     depends_on:
       db:
