@@ -7,8 +7,8 @@ from sqlalchemy.pool import StaticPool
 from app.core.database import Base, get_db
 from app.core.security import create_access_token, hash_password
 from app.main import app
-from app.models.product import AttributeType, AttributeValue, Product, ProductVariant
-from app.models.stock import StockMovement, MovementType
+from app.models.product import Product, ProductVariant
+from app.models.stock import MovementType, StockMovement
 from app.models.supplier import Supplier
 from app.models.user import User, UserRole
 
