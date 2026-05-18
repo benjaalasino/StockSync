@@ -27,7 +27,7 @@ export default function SalesPage() {
 
   const addLine = () => {
     if (!selectedVariant || !selectedProduct) return;
-    const qty = parseInt(qtyInput);
+    const qty = parseInt(qtyInput, 10);
     if (!qty || qty <= 0) {
       toast.error("La cantidad debe ser mayor a 0");
       return;
@@ -98,7 +98,7 @@ export default function SalesPage() {
               <select
                 value={selectedProductId}
                 onChange={(e) => {
-                  setSelectedProductId(e.target.value ? parseInt(e.target.value) : "");
+                  setSelectedProductId(e.target.value ? parseInt(e.target.value, 10) : "");
                   setSelectedVariantId("");
                 }}
                 className="w-full rounded-2xl border border-outline-variant bg-background px-4 py-3 text-body-sm text-on-surface outline-none focus:border-primary"
@@ -114,7 +114,7 @@ export default function SalesPage() {
               <label className="block text-label-md font-medium text-on-surface-variant mb-1.5">Variante</label>
               <select
                 value={selectedVariantId}
-                onChange={(e) => setSelectedVariantId(e.target.value ? parseInt(e.target.value) : "")}
+                onChange={(e) => setSelectedVariantId(e.target.value ? parseInt(e.target.value, 10) : "")}
                 disabled={!selectedProduct}
                 className="w-full rounded-2xl border border-outline-variant bg-background px-4 py-3 text-body-sm text-on-surface outline-none focus:border-primary disabled:opacity-50"
               >

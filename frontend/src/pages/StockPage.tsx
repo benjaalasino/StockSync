@@ -24,7 +24,7 @@ function AdjustModal({
     if (!variant) return;
     await adjust.mutateAsync({
       variant_id: variant.id,
-      quantity: parseInt(quantity),
+      quantity: parseInt(quantity, 10),
       notes,
     });
     onClose();

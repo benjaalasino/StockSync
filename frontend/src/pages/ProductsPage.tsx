@@ -55,7 +55,7 @@ function CreateProductModal({ open, onClose }: { open: boolean; onClose: () => v
           <label className="block text-label-md font-medium text-on-surface-variant mb-1.5">Categoría</label>
           <select
             value={form.category_id ?? ""}
-            onChange={(e) => setForm({ ...form, category_id: e.target.value ? parseInt(e.target.value) : null })}
+            onChange={(e) => setForm({ ...form, category_id: e.target.value ? parseInt(e.target.value, 10) : null })}
             className="w-full rounded-2xl border border-outline-variant bg-background px-4 py-3 text-body-md text-on-surface outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
           >
             <option value="">Sin categoría</option>
