@@ -29,12 +29,15 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-// Redirigir al login si el token expiró
+// Redirigir al login si el token expiró o no hay sesión
 apiClient.interceptors.response.use(
   (res) => res,
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("access_token");
+      localStorage.removeItem("stocksync-auth");
+      localStorage.removeItem("user_name");
+      localStorage.removeItem("user_role");
       window.location.href = "/login";
     }
     return Promise.reject(error);

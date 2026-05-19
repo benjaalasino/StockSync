@@ -22,9 +22,10 @@ const menuItems = [
   { label: "Reportes", path: "/reports", icon: "assessment" },
 ];
 
-function AppLayout({ onLogout }: { onLogout: () => void }) {
+function AppLayout({ onLogout, userName }: { onLogout: () => void; userName: string }) {
   const location = useLocation();
   const pageTitle = menuItems.find((item) => item.path === location.pathname)?.label || "StockSync";
+  const userRole = localStorage.getItem("user_role") === "admin" ? "Administrador" : "Operador";
 
   return (
     <div className="min-h-screen bg-background text-on-background">
@@ -64,8 +65,8 @@ function AppLayout({ onLogout }: { onLogout: () => void }) {
           <div className="mb-3 flex items-center gap-3">
             <div className="h-11 w-11 rounded-2xl bg-secondary-container"></div>
             <div>
-              <p className="font-semibold text-on-surface">Admin</p>
-              <p className="text-sm text-on-surface-variant">Acceso demo</p>
+              <p className="font-semibold text-on-surface">{userName}</p>
+              <p className="text-sm text-on-surface-variant">{userRole}</p>
             </div>
           </div>
           <button
@@ -85,7 +86,7 @@ function AppLayout({ onLogout }: { onLogout: () => void }) {
             <h1 className="text-headline-md font-semibold text-on-surface">{pageTitle}</h1>
           </div>
           <div className="rounded-3xl bg-surface p-3 text-on-surface-variant shadow-soft-bloom-shadow ring-1 ring-outline-variant">
-            Todo listo para explorar el menú de StockSync.
+            StockSync — Sistema de inventario
           </div>
         </header>
 
@@ -104,14 +105,19 @@ function ProtectedRoute({ children }: { children: JSX.Element }) {
 
 function App() {
   const [authenticated, setAuthenticated] = useState(() => Boolean(localStorage.getItem("stocksync-auth")));
+  const [userName, setUserName] = useState(() => localStorage.getItem("user_name") || "Admin");
 
-  const handleLogin = () => {
+  const handleLogin = (name: string) => {
     localStorage.setItem("stocksync-auth", "true");
     setAuthenticated(true);
+    setUserName(name);
   };
 
   const handleLogout = () => {
     localStorage.removeItem("stocksync-auth");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user_name");
+    localStorage.removeItem("user_role");
     setAuthenticated(false);
   };
 
@@ -128,7 +134,7 @@ function App() {
           path="/"
           element={
             <ProtectedRoute>
-              <AppLayout onLogout={handleLogout} />
+              <AppLayout onLogout={handleLogout} userName={userName} />
             </ProtectedRoute>
           }
         >

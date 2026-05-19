@@ -1,23 +1,6 @@
 version: "3.9"
 
 services:
-  db:
-    image: postgres:16-alpine
-    container_name: stocksync_db
-    environment:
-      POSTGRES_USER: stocksync
-      POSTGRES_PASSWORD: stocksync
-      POSTGRES_DB: stocksync
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U stocksync"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
   backend:
     build: ./backend
     container_name: stocksync_backend
@@ -28,12 +11,9 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql://stocksync:stocksync@db:5432/stocksync
-      SECRET_KEY: dev-secret-key-change-in-production
+      DATABASE_URL: ${DATABASE_URL}
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
       DEBUG: "true"
-    depends_on:
-      db:
-        condition: service_healthy
 
   frontend:
     build: ./frontend
@@ -42,6 +22,3 @@ services:
       - "5173:80"
     depends_on:
       - backend
-
-volumes:
-  postgres_data:
