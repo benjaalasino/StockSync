@@ -7,7 +7,6 @@ from pydantic import BaseModel, field_validator
 
 from app.models.stock import MovementType, PurchaseOrderStatus
 
-
 # ---------------------------------------------------------------------------
 # Stock Movement (Kardex)
 # ---------------------------------------------------------------------------

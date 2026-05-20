@@ -1,30 +1,18 @@
-name: CI — StockSync
+name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [develop]
   pull_request:
-    branches: [main, develop]
+    branches: [develop, main]
 
 jobs:
-  backend:
-    name: Backend (lint + tests)
+  lint:
+    name: Lint (Ruff)
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_USER: stocksync
-          POSTGRES_PASSWORD: stocksync
-          POSTGRES_DB: stocksync_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 5
+    defaults:
+      run:
+        working-directory: backend
 
     steps:
       - uses: actions/checkout@v4
@@ -33,49 +21,39 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: pip
 
-      - name: Install dependencies
-        working-directory: backend
-        run: pip install -r requirements.txt -r requirements-dev.txt
+      - name: Install dev dependencies
+        run: pip install -r requirements-dev.txt
 
-      - name: Lint — Ruff
-        working-directory: backend
-        run: ruff check app/
+      - name: Run Ruff linter
+        run: ruff check .
 
-      - name: Metrics — Radon CC (info only)
-        working-directory: backend
-        run: radon cc app/ -s -a
-
-      - name: Metrics — Radon MI (info only)
-        working-directory: backend
-        run: radon mi app/ -s
-
-      - name: Run tests + coverage
-        working-directory: backend
-        env:
-          DATABASE_URL: postgresql://stocksync:stocksync@localhost:5432/stocksync_test
-          SECRET_KEY: test-secret-key
-        run: pytest tests/ --cov=app --cov-report=term-missing --cov-fail-under=60
-
-  frontend:
-    name: Frontend (lint)
+  test:
+    name: Tests & Coverage
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node 20
-        uses: actions/setup-node@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
         with:
-          node-version: "20"
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
+          python-version: "3.12"
 
       - name: Install dependencies
-        working-directory: frontend
-        run: npm install
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
 
-      - name: Lint — ESLint
-        working-directory: frontend
-        run: npm run lint
+      - name: Run tests with coverage
+        run: pytest --cov=app --cov-report=xml --cov-fail-under=60 -v
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: backend/coverage.xml

@@ -79,7 +79,7 @@ class StockService:
 
     def get_low_stock_alerts(self, db: Session) -> list[StockSummary]:
         """REQ-F04: Variantes en o por debajo del punto de reorden."""
-        variants = db.query(ProductVariant).filter(ProductVariant.is_active == True).all()
+        variants = db.query(ProductVariant).filter(ProductVariant.is_active).all()
         alerts = []
         for v in variants:
             stock = self.get_current_stock(db, v.id)
@@ -261,7 +261,7 @@ class StockService:
     # ---------------------------------------------------------------------------
 
     def get_suppliers(self, db: Session) -> list[Supplier]:
-        return db.query(Supplier).filter(Supplier.is_active == True).all()
+        return db.query(Supplier).filter(Supplier.is_active).all()
 
     def create_supplier(self, db: Session, data: SupplierCreate) -> Supplier:
         supplier = Supplier(**data.model_dump())
