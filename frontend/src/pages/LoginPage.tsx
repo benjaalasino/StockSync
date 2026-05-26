@@ -1,29 +1,32 @@
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const VALID_USER = {
-  email: "admin@stocksync.com",
-  password: "Password2026!",
-};
+import { authApi } from "../services/api";
 
 interface LoginPageProps {
   onLogin: () => void;
 }
 
 export default function LoginPage({ onLogin }: LoginPageProps) {
-  const [email, setEmail] = useState("admin@stocksync.com");
-  const [password, setPassword] = useState("Password2026!");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (email === VALID_USER.email && password === VALID_USER.password) {
+    setError("");
+    setLoading(true);
+    try {
+      const { access_token } = await authApi.login(email, password);
+      localStorage.setItem("access_token", access_token);
       onLogin();
       navigate("/dashboard", { replace: true });
-      return;
+    } catch {
+      setError("Usuario o contraseña incorrectos.");
+    } finally {
+      setLoading(false);
     }
-    setError("Usuario o contraseña incorrectos. Intenta de nuevo.");
   };
 
   return (
@@ -49,17 +52,9 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
           </p>
 
           <div className="mt-10 rounded-3xl bg-surface p-6 shadow-soft-bloom-shadow ring-1 ring-outline-variant">
-            <p className="text-label-md font-semibold text-on-surface">Credenciales de acceso</p>
-            <div className="mt-4 space-y-3 text-body-md text-on-surface-variant">
-              <p>
-                <span className="font-semibold text-on-surface">Usuario:</span> admin@stocksync.com
-              </p>
-              <p>
-                <span className="font-semibold text-on-surface">Contraseña:</span> Password2026!
-              </p>
-            </div>
-            <p className="mt-6 text-sm text-on-surface-variant">
-              El login es local y sirve para navegar entre dashboards, productos, stock y reportes.
+            <p className="text-label-md font-semibold text-on-surface">Acceso al sistema</p>
+            <p className="mt-3 text-sm text-on-surface-variant">
+              Usá las credenciales de tu usuario registrado. Si no tenés uno, crealo desde el Swagger en <code className="text-primary">localhost:8000/docs</code> → <code className="text-primary">POST /api/v1/auth/register</code>.
             </p>
           </div>
         </div>
@@ -107,9 +102,10 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
 
             <button
               type="submit"
-              className="w-full rounded-2xl bg-primary py-3 text-body-md font-semibold text-on-primary transition hover:bg-primary-container"
+              disabled={loading}
+              className="w-full rounded-2xl bg-primary py-3 text-body-md font-semibold text-on-primary transition hover:bg-primary-container disabled:opacity-60"
             >
-              Iniciar sesión
+              {loading ? "Iniciando sesión..." : "Iniciar sesión"}
             </button>
           </form>
         </div>

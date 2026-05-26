@@ -2,11 +2,12 @@
 
 from fastapi import APIRouter
 
-from app.api.v1 import auth, products, stock, users
+from app.api.v1 import auth, clients, products, stock, users
 
 api_router = APIRouter()
 
 api_router.include_router(auth.router, prefix="/auth", tags=["Autenticación"])
 api_router.include_router(users.router, prefix="/users", tags=["Usuarios"])
+api_router.include_router(clients.router, prefix="/clients", tags=["Clientes"])
 api_router.include_router(products.router, prefix="/products", tags=["Productos"])
 api_router.include_router(stock.router, prefix="/stock", tags=["Stock & Kardex"])

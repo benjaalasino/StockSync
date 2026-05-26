@@ -1,3 +1,12 @@
+# 06 — Frontend: página Productos (`/products`) con datos reales
+
+## Qué cambia
+
+La página actual (`ProductsPage.tsx`) tiene 3 tarjetas hardcodeadas. Se reemplaza por una versión que consume `GET /products/` y muestra los productos reales con sus variantes y stock actual.
+
+## Archivo a reemplazar: `frontend/src/pages/ProductsPage.tsx`
+
+```tsx
 import { useState, useEffect } from 'react'
 import { productsApi } from '../services/api'
 import type { Product, ProductVariant } from '../types'
@@ -48,13 +57,22 @@ export default function ProductsPage() {
   )
 }
 
-function ProductCard({ product, expanded, onToggle }: { product: Product; expanded: boolean; onToggle: () => void }) {
+// ─── Tarjeta de producto ──────────────────────────────────────────────────────
+
+interface ProductCardProps {
+  product: Product
+  expanded: boolean
+  onToggle: () => void
+}
+
+function ProductCard({ product, expanded, onToggle }: ProductCardProps) {
   const activeVariants = product.variants?.filter(v => v.is_active) ?? []
   const totalStock = activeVariants.reduce((sum, v) => sum + (v.current_stock ?? 0), 0)
   const hasLowStock = activeVariants.some(v => (v.current_stock ?? 0) <= v.reorder_point)
 
   return (
     <div className="border border-gray-200 rounded-xl overflow-hidden">
+      {/* Header de la tarjeta */}
       <button
         onClick={onToggle}
         className="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition text-left"
@@ -73,6 +91,7 @@ function ProductCard({ product, expanded, onToggle }: { product: Product; expand
             <p className="text-xs text-gray-400 mt-0.5">
               SKU: {product.base_sku}
               {product.brand && ` · ${product.brand}`}
+              {product.category?.name && ` · ${product.category.name}`}
             </p>
           </div>
         </div>
@@ -83,6 +102,7 @@ function ProductCard({ product, expanded, onToggle }: { product: Product; expand
         </div>
       </button>
 
+      {/* Variantes expandidas */}
       {expanded && (
         <div className="border-t border-gray-100 bg-gray-50 px-5 py-3">
           {activeVariants.length === 0 ? (
@@ -111,6 +131,8 @@ function ProductCard({ product, expanded, onToggle }: { product: Product; expand
   )
 }
 
+// ─── Fila de variante ─────────────────────────────────────────────────────────
+
 function VariantRow({ variant }: { variant: ProductVariant }) {
   const stock = variant.current_stock ?? 0
   const belowReorder = stock <= variant.reorder_point
@@ -122,7 +144,7 @@ function VariantRow({ variant }: { variant: ProductVariant }) {
         {variant.attribute_values?.map(av => av.value).join(' · ') || '—'}
       </td>
       <td className="py-2 text-right text-gray-700">
-        ${Number(variant.sale_price).toLocaleString('es-AR')}
+        ${variant.sale_price?.toLocaleString('es-AR') ?? '—'}
       </td>
       <td className="py-2 text-right">
         <span className={`font-medium ${belowReorder ? 'text-amber-600' : 'text-gray-800'}`}>
@@ -133,3 +155,44 @@ function VariantRow({ variant }: { variant: ProductVariant }) {
     </tr>
   )
 }
+```
+
+## Verificar que el tipo `Product` tenga `variants` y `category`
+
+En `frontend/src/types/index.ts`, la interfaz `Product` debería verse así:
+
+```typescript
+export interface Product {
+  id: number
+  name: string
+  description?: string
+  brand?: string
+  base_sku: string
+  is_active: boolean
+  category?: Category          // asegurarse que esté
+  variants?: ProductVariant[]  // asegurarse que esté
+  created_at: string
+  updated_at: string
+}
+```
+
+Y `ProductVariant` debe tener `current_stock` y `attribute_values`:
+
+```typescript
+export interface ProductVariant {
+  id: number
+  product_id: number
+  sku: string
+  sale_price: number
+  cost_price: number
+  reorder_point: number
+  is_active: boolean
+  current_stock?: number          // calculado en el backend desde Kardex
+  attribute_values?: AttributeValue[]
+  created_at: string
+}
+```
+
+## Verificar que `productsApi.list()` incluya variantes
+
+El endpoint `GET /products/` del backend ya devuelve variantes con `current_stock` (según `ProductResponse` que incluye `variants: List[VariantResponse]`). No se necesitan cambios en el backend.

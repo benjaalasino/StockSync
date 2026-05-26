@@ -6,8 +6,9 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.security import get_current_user
+from app.models.user import UserRole
 from app.schemas.auth import TokenResponse
-from app.schemas.user import UserResponse
+from app.schemas.user import UserCreate, UserResponse
 from app.services.auth_service import auth_service
 
 router = APIRouter()
@@ -21,6 +22,16 @@ def login(
     """Inicia sesión y retorna un JWT de acceso."""
     token = auth_service.authenticate(db, email=form_data.username, password=form_data.password)
     return TokenResponse(access_token=token)
+
+
+@router.post("/register", response_model=UserResponse, status_code=201)
+def register(
+    data: UserCreate,
+    db: Session = Depends(get_db),
+):
+    """Registro público para crear el primer usuario admin."""
+    data.role = UserRole.ADMIN
+    return auth_service.create_user(db, data)
 
 
 @router.get("/me", response_model=UserResponse)

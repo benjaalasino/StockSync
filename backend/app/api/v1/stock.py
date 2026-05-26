@@ -73,6 +73,14 @@ def adjust_stock(
 # Sales
 # ---------------------------------------------------------------------------
 
+@router.get("/sales", response_model=list[SaleResponse])
+def list_sales(
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    return stock_service.get_sales(db)
+
+
 @router.post("/sales", response_model=SaleResponse, status_code=201)
 def create_sale(
     data: SaleCreate,

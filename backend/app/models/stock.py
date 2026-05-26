@@ -7,6 +7,7 @@ de todos los movimientos (StockMovement) asociados a una variante.
 
 import enum
 from datetime import datetime
+from typing import Optional
 
 from sqlalchemy import (
     Boolean,
@@ -134,14 +135,20 @@ class Sale(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    client_id = Column(Integer, ForeignKey("clients.id"), nullable=True, index=True)
     notes = Column(Text, nullable=True)
     is_cancelled = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     created_by_user = relationship("User")
+    client = relationship("Client", back_populates="sales")
     items = relationship(
         "SaleItem", back_populates="sale", cascade="all, delete-orphan"
     )
+
+    @property
+    def client_name(self) -> Optional[str]:
+        return self.client.full_name if self.client else None
 
     def __repr__(self) -> str:
         return f"<Sale id={self.id} cancelled={self.is_cancelled}>"
