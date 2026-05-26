@@ -131,7 +131,7 @@ class StockService:
         REQ-F03 + REQ-NF01: Valida disponibilidad y registra la venta de forma
         atómica usando SELECT FOR UPDATE para prevenir race conditions.
         """
-        sale = Sale(created_by=user.id, notes=data.notes)
+        sale = Sale(created_by=user.id, notes=data.notes, client_id=data.client_id)
         db.add(sale)
         db.flush()  # Obtener ID sin hacer commit todavía
 
@@ -187,6 +187,9 @@ class StockService:
         db.commit()
         db.refresh(sale)
         return sale
+
+    def get_sales(self, db: Session) -> list[Sale]:
+        return db.query(Sale).order_by(Sale.created_at.desc()).all()
 
     # ---------------------------------------------------------------------------
     # Purchase Orders

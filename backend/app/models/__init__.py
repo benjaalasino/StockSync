@@ -1,5 +1,6 @@
 """Exporta todos los modelos para que Alembic los detecte."""
 
+from app.models.client import Client  # noqa: F401
 from app.models.product import (  # noqa: F401
     AttributeType,
     AttributeValue,

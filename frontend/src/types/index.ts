@@ -103,10 +103,18 @@ export interface SaleItem {
 export interface Sale {
   id: number;
   created_by: number;
+  client_id?: number;
+  client_name?: string;
   notes: string | null;
   is_cancelled: boolean;
   created_at: string;
   items: SaleItem[];
+}
+
+export interface SaleCreate {
+  items: { variant_id: number; quantity: number; unit_price: number }[];
+  notes?: string;
+  client_id?: number;
 }
 
 // ─── Purchase Orders ─────────────────────────────────────────────────────────
@@ -133,6 +141,31 @@ export interface PurchaseOrder {
   received_at: string | null;
   created_at: string;
   items: PurchaseOrderItem[];
+}
+
+// ─── Clients ─────────────────────────────────────────────────────────────────
+
+export interface Client {
+  id: number;
+  full_name: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  notes?: string;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface ClientCreate {
+  full_name: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  notes?: string;
+}
+
+export interface ClientUpdate extends Partial<ClientCreate> {
+  is_active?: boolean;
 }
 
 // ─── Supplier ────────────────────────────────────────────────────────────────
