@@ -36,3 +36,7 @@ app/schemas/auth.py - A (100.00)
 RESUMEN:
   Módulo con MI más bajo: app/schemas/user.py (55.21) — supera umbral >= 40 ✓
   Todos los módulos: grado A ✓
+
+
+
+
