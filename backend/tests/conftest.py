@@ -81,4 +81,5 @@ def operator_token(client, db):
         "/api/v1/auth/login",
         data={"username": "operator@test.com", "password": "operatorpass123"},
     )
+    assert resp.status_code == 200, resp.text
     return resp.json()["access_token"]
