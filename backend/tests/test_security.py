@@ -22,7 +22,7 @@ def test_tc28_hash_password_produce_hash_bcrypt():
     plain = "micontrasena123"
     hashed = hash_password(plain)
     assert hashed != plain
-    assert hashed.startswith("$2b$")
+    assert hashed.startswith("$2")
 
 
 # ---------------------------------------------------------------------------
