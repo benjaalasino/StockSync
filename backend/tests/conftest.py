@@ -62,6 +62,7 @@ def admin_token(client, db):
         "/api/v1/auth/login",
         data={"username": "admin@test.com", "password": "adminpass123"},
     )
+    assert resp.status_code == 200, resp.text
     return resp.json()["access_token"]
 
 
