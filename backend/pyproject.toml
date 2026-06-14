@@ -1,33 +1,33 @@
 [tool.ruff]
 target-version = "py312"
-line-length = 88
-indent-width = 4
+line-length = 100
 
 [tool.ruff.lint]
-# E/W: pycodestyle, F: pyflakes, I: isort, N: naming conventions
-select = ["E", "W", "F", "I", "N"]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+]
 ignore = [
-    "E501",  # line too long (handled by formatter)
+    "E501",  # line too long (manejado por formatter)
+    "B008",  # do not perform function calls in default arguments (FastAPI Depends)
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["N802", "N803"]  # allow non-snake_case in test params/fixtures
-
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
+"tests/*" = ["S101"]  # allow assert in tests
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "--cov=app --cov-report=term-missing --cov-fail-under=60"
 
 [tool.coverage.run]
 source = ["app"]
 omit = ["tests/*", "alembic/*"]
 
 [tool.coverage.report]
+fail_under = 60
 show_missing = true
-skip_covered = false

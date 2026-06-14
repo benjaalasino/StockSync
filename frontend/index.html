@@ -4,8 +4,95 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>StockSync</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-low": "#f2f4f6",
+              "on-primary-fixed-variant": "#004d62",
+              "on-secondary-fixed": "#101b30",
+              error: "#ba1a1a",
+              surface: "#f7f9fb",
+              "on-tertiary-fixed": "#001d36",
+              "surface-dim": "#d8dadc",
+              "on-primary-container": "#004254",
+              "inverse-surface": "#2d3133",
+              "error-container": "#ffdad6",
+              tertiary: "#47607e",
+              "on-secondary-container": "#5a647c",
+              "on-primary": "#ffffff",
+              "on-error-container": "#93000a",
+              "on-primary-fixed": "#001f29",
+              "on-tertiary-container": "#243e5a",
+              "surface-container-lowest": "#ffffff",
+              "inverse-primary": "#5cd4ff",
+              "on-secondary": "#ffffff",
+              "tertiary-fixed": "#d1e4ff",
+              "surface-bright": "#f7f9fb",
+              "secondary-fixed-dim": "#bbc6e2",
+              "secondary-fixed": "#d7e2ff",
+              background: "#f7f9fb",
+              "surface-tint": "#006782",
+              "primary-fixed-dim": "#5cd4ff",
+              "on-surface": "#191c1e",
+              "tertiary-container": "#90a9ca",
+              "on-surface-variant": "#3d484e",
+              "inverse-on-surface": "#eff1f3",
+              primary: "#006782",
+              "surface-variant": "#e0e3e5",
+              "primary-fixed": "#baeaff",
+              outline: "#6d797f",
+              "on-tertiary-fixed-variant": "#2f4865",
+              "secondary": "#545e76",
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+            spacing: {
+              base: "8px",
+              sidebar_width: "260px",
+              stack_md: "12px",
+              stack_sm: "4px",
+              stack_lg: "24px",
+              gutter: "24px",
+              container_padding: "24px",
+            },
+            fontFamily: {
+              headline: ["Inter"],
+              body: ["Inter"],
+            },
+            fontSize: {
+              "headline-lg": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+              "headline-md": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+              "label-sm": ["11px", { lineHeight: "14px", fontWeight: "500" }],
+              "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+              "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+      .soft-bloom-shadow {
+        box-shadow: 0px 24px 60px rgba(0, 102, 139, 0.08);
+      }
+    </style>
   </head>
-  <body>
+  <body class="bg-background text-on-background">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
