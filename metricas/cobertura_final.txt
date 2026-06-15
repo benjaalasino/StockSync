@@ -1,0 +1,55 @@
+Cobertura de Pruebas — Medición final
+Fecha: 2026-06-15
+Herramienta: coverage.py (pytest + coverage)
+Umbral del proyecto: cobertura >= 60%
+================================================================================
+
+RESUMEN GLOBAL:
+  Statements totales:      811
+  Statements cubiertos:    741
+  Statements no cubiertos:  70
+  Cobertura total:       91.37%
+
+COBERTURA POR MÓDULO:
+  app/core/config.py             100% ████████████
+  app/core/security.py            95% ███████████░
+  app/core/database.py            69% █████████░░░
+  app/models/product.py           92% ██████████░
+  app/models/stock.py             94% ███████████░
+  app/models/supplier.py          94% ███████████░
+  app/models/user.py              92% ██████████░
+  app/schemas/*.py               100% ████████████
+  app/services/auth_service.py    95% ███████████░
+  app/services/product_service.py 93% ███████████░
+  app/services/stock_service.py   89% ██████████░░
+  app/api/v1/auth.py             100% ████████████
+  app/api/v1/products.py          65% ████████░░░░
+  app/api/v1/stock.py             76% █████████░░░
+  app/api/v1/users.py             85% ██████████░░
+  app/api/v1/router.py           100% ████████████
+  app/main.py                     90% ██████████░
+
+PRUEBAS UNITARIAS:
+  Tests totales:   48
+  Tests pasados:   48
+  Tests fallidos:   0
+
+  Por módulo:
+    test_product_service.py    — 10+ casos
+    test_stock_service.py      — 10+ casos
+    test_auth_service.py       — 3+ casos
+    test_api_products.py       — 5+ casos
+    test_api_stock.py          — 5+ casos
+    test_api_auth.py           — 5+ casos
+    test_security.py           — 3+ casos
+
+================================================================================
+RESUMEN:
+  Cobertura global:  91.37% ✓
+  Tests totales:     48 (100% pasan)
+  Umbral >= 60%:     CUMPLE ✓
+  Módulos con menor cobertura:
+    - app/core/database.py    (69%)
+    - app/api/v1/products.py  (65%)
+    - app/api/v1/stock.py     (76%)
+================================================================================

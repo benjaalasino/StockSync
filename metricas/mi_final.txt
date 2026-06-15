@@ -1,0 +1,50 @@
+Maintainability Index — Medición final
+Fecha: 2026-06-15
+Herramienta: radon mi app/ -s
+Umbral del proyecto: MI mínimo por módulo >= 40
+================================================================================
+
+app/__init__.py - A (100.00)
+app/main.py - A (100.00)
+app/repositories/__init__.py - A (100.00)
+app/core/__init__.py - A (100.00)
+app/core/config.py - A (93.06)
+app/core/database.py - A (100.00)
+app/core/security.py - A (74.80)
+app/services/product_service.py - A (62.06)
+app/services/__init__.py - A (100.00)
+app/services/stock_service.py - A (57.38)
+app/services/auth_service.py - A (57.64)
+app/api/__init__.py - A (100.00)
+app/api/v1/router.py - A (100.00)
+app/api/v1/__init__.py - A (100.00)
+app/api/v1/products.py - A (100.00)
+app/api/v1/users.py - A (100.00)
+app/api/v1/stock.py - A (100.00)
+app/api/v1/auth.py - A (100.00)
+app/models/product.py - A (100.00)
+app/models/__init__.py - A (100.00)
+app/models/supplier.py - A (100.00)
+app/models/stock.py - A (100.00)
+app/models/user.py - A (85.19)
+app/schemas/product.py - A (63.03)
+app/schemas/__init__.py - A (100.00)
+app/schemas/stock.py - A (56.99)
+app/schemas/user.py - A (55.21)
+app/schemas/auth.py - A (100.00)
+
+================================================================================
+RESUMEN:
+  Módulo con MI más bajo: app/schemas/user.py (55.21) — supera umbral >= 40 ✓
+  Todos los módulos: grado A ✓
+  Rango de MI: 55.21 — 100.00
+  Umbral MI >= 40: CUMPLE ✓
+
+  Evolución vs. medición inicial (2026-05-15):
+    - MI general se mantiene en grado A
+    - Mejora: app/core/security.py 74.29 → 74.80
+    - Mejora: app/services/product_service.py 59.19 → 62.06
+    - Mejora: app/services/stock_service.py 57.00 → 57.38
+    - Mejora: app/services/auth_service.py 56.02 → 57.64
+    - Sin cambios en models, schemas, api
+================================================================================

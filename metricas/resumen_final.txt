@@ -1,0 +1,49 @@
+RESUMEN DE MÉTRICAS — StockSync — Entrega Final
+Fecha: 2026-06-15
+Grupo 5: Alasino, Calvo, Contreras, González
+================================================================================
+
+┌────────────────────────┬───────────────────┬──────────┬──────────┐
+│ Métrica                │ Valor             │ Umbral   │ Estado   │
+├────────────────────────┼───────────────────┼──────────┼──────────┤
+│ LOC (Backend app)      │ 1.777             │ —        │ —        │
+│ LOC (Backend tests)    │ 1.180             │ —        │ —        │
+│ LOC (Frontend)         │ 808               │ —        │ —        │
+│ LOC (Total proyecto)   │ 3.765             │ —        │ —        │
+├────────────────────────┼───────────────────┼──────────┼──────────┤
+│ CC promedio            │ 1.47              │ ≤ 10     │ ✅       │
+│ CC máxima              │ 5                 │ ≤ 10     │ ✅       │
+├────────────────────────┼───────────────────┼──────────┼──────────┤
+│ MI mínimo              │ 55.21 (user.py)   │ ≥ 40     │ ✅       │
+│ MI — Todos grado A     │ Sí                │ —        │ ✅       │
+├────────────────────────┼───────────────────┼──────────┼──────────┤
+│ Cobertura global       │ 91.37%            │ ≥ 80%    │ ✅       │
+│ Tests totales          │ 48 (100% pasan)   │ —        │ ✅       │
+├────────────────────────┼───────────────────┼──────────┼──────────┤
+│ Defectos encontrados   │ 3                 │ —        │ —        │
+│ Defectos / KLOC        │ 1.16              │ < 2      │ ✅       │
+└────────────────────────┴───────────────────┴──────────┴──────────┘
+
+EVOLUCIÓN vs. HITO 3 (2026-05-15):
+  ┌────────────────────┬────────────┬────────────┬──────────┐
+  │ Métrica            │ Inicial    │ Final      │ Cambio   │
+  ├────────────────────┼────────────┼────────────┼──────────┤
+  │ LOC (backend app)  │ 1.682      │ 1.777      │ +95      │
+  │ CC promedio        │ 1.47       │ 1.47       │ —        │
+  │ MI mínimo          │ 55.21      │ 55.21      │ —        │
+  │ Cobertura          │ —          │ 91.37%     │ N/A      │
+  │ Defectos/KLOC      │ —          │ 1.16       │ N/A      │
+  └────────────────────┴────────────┴────────────┴──────────┘
+
+CONCLUSIÓN:
+  Todas las métricas cumplen los umbrales definidos en el Plan SQA.
+  El código mantiene complejidad baja, alta mantenibilidad y
+  cobertura de pruebas superior al 80%.
+
+  Archivos individuales con métricas detalladas:
+    - loc_final.txt
+    - cc_final.txt
+    - mi_final.txt
+    - cobertura_final.txt
+    - defectos_final.txt
+================================================================================
