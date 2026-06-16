@@ -7,7 +7,6 @@ de todos los movimientos (StockMovement) asociados a una variante.
 
 import enum
 from datetime import datetime
-from typing import Optional
 
 from sqlalchemy import (
     Boolean,
@@ -25,7 +24,7 @@ from sqlalchemy.orm import relationship
 from app.core.database import Base
 
 
-class MovementType(str, enum.Enum):
+class MovementType(enum.StrEnum):
     PURCHASE = "PURCHASE"       # Ingreso por compra
     SALE = "SALE"               # Egreso por venta
     ADJUSTMENT_IN = "ADJUSTMENT_IN"    # Ajuste positivo (solo Admin)
@@ -71,7 +70,7 @@ class StockMovement(Base):
         )
 
 
-class PurchaseOrderStatus(str, enum.Enum):
+class PurchaseOrderStatus(enum.StrEnum):
     PENDING = "PENDING"
     CONFIRMED = "CONFIRMED"
     RECEIVED = "RECEIVED"
@@ -147,7 +146,7 @@ class Sale(Base):
     )
 
     @property
-    def client_name(self) -> Optional[str]:
+    def client_name(self) -> str | None:
         return self.client.full_name if self.client else None
 
     def __repr__(self) -> str:

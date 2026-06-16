@@ -256,6 +256,42 @@ def test_generate_variants_success(db):
     assert f"{product.base_sku}-S-ROJO" in skus
     assert f"{product.base_sku}-M-AZUL" in skus
 
+# ---------------------------------------------------------------------------
+# TC-13 — REQ-F01 — Caja Blanca / Cobertura de rama
+# generate_variants omite combinaciones cuyo SKU ya existe
+# Con S-ROJO ya creada, generate_variants([[S],[ROJO,AZUL]]) → solo S-AZUL nueva
+# ---------------------------------------------------------------------------
+def test_tc13_generate_variants_omite_duplicados(db):
+    # 1. ARRANGE
+    product = create_test_product_for_variants(db)
+    talles, colores = setup_attributes(db)
+    val_s = talles[0]    # S
+    val_rojo = colores[0]  # Rojo
+    val_azul = colores[1]  # Azul
+
+    existing = VariantCreate(
+        attribute_value_ids=[val_s.id, val_rojo.id],
+        sale_price=100.0,
+        cost_price=50.0,
+        reorder_point=5,
+    )
+    product_service.add_variant(db, product_id=product.id, data=existing)
+
+    data = GenerateVariantsRequest(
+        attribute_combinations=[[val_s.id], [val_rojo.id, val_azul.id]],
+        base_sale_price=150.0,
+        base_cost_price=70.0,
+        reorder_point=5,
+    )
+
+    # 2. ACT
+    nuevas = product_service.generate_variants(db, product_id=product.id, data=data)
+
+    # 3. ASSERT — solo S-AZUL es nueva; S-ROJO fue omitida por ser duplicada
+    assert len(nuevas) == 1
+    assert nuevas[0].sku == f"{product.base_sku}-S-AZUL"
+
+
 def test_update_variant_success(db):
     # 1. ARRANGE
     product = create_test_product_for_variants(db)

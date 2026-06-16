@@ -194,3 +194,215 @@ def test_create_supplier(db):
     assert supplier.id is not None
     assert supplier.name == "Test Supplier"
     assert supplier.email == "test@supplier.com"
+
+
+# ---------------------------------------------------------------------------
+# TC-16 — REQ-F02 — Caja Blanca / Sentencia (SUM)
+# Múltiples movimientos: +100 PURCHASE, -30 SALE, +10 ADJ_IN → 80
+# ---------------------------------------------------------------------------
+def test_tc16_stock_suma_multiples_movimientos(db):
+    from app.models.stock import StockMovement
+
+    user = create_test_user(db)
+    variant = create_test_variant(db)
+
+    for qty, mtype in [
+        (100, MovementType.PURCHASE),
+        (-30, MovementType.SALE),
+        (10, MovementType.ADJUSTMENT_IN),
+    ]:
+        db.add(StockMovement(
+            variant_id=variant.id,
+            user_id=user.id,
+            movement_type=mtype,
+            quantity=qty,
+        ))
+    db.commit()
+
+    assert stock_service.get_current_stock(db, variant.id) == 80
+
+
+# ---------------------------------------------------------------------------
+# TC-17 — REQ-F02 — Caja Negra
+# get_stock_summary con variante inexistente → HTTPException 404
+# ---------------------------------------------------------------------------
+def test_tc17_stock_summary_variante_inexistente(db):
+    with pytest.raises(HTTPException) as exc_info:
+        stock_service.get_stock_summary(db, variant_id=99999)
+    assert exc_info.value.status_code == 404
+
+
+# ---------------------------------------------------------------------------
+# TC-18 — REQ-F04 — Valor límite (stock == reorder_point)
+# stock=5, reorder_point=5 → variante aparece en alertas
+# ---------------------------------------------------------------------------
+def test_tc18_alerta_stock_igual_a_reorder_point(db):
+    user = create_test_user(db)
+    product = Product(name="Alerta Producto", base_sku="ALRT-001")
+    db.add(product)
+    db.commit()
+
+    variant = ProductVariant(
+        product_id=product.id,
+        sku="ALRT-001-A",
+        sale_price=50.0,
+        cost_price=20.0,
+        reorder_point=5,
+    )
+    db.add(variant)
+    db.commit()
+    db.refresh(variant)
+
+    stock_service.adjust_stock(
+        db,
+        StockAdjustmentRequest(variant_id=variant.id, quantity=5, notes="Stock límite"),
+        user,
+    )
+
+    alerts = stock_service.get_low_stock_alerts(db)
+    alert_ids = [a.variant_id for a in alerts]
+    assert variant.id in alert_ids
+
+
+# ---------------------------------------------------------------------------
+# TC-19 — REQ-F04 — Valor límite (stock == reorder_point + 1)
+# stock=6, reorder_point=5 → variante NO aparece en alertas
+# ---------------------------------------------------------------------------
+def test_tc19_sin_alerta_stock_sobre_reorder_point(db):
+    user = create_test_user(db)
+    product = Product(name="Sin Alerta Producto", base_sku="NOALRT-001")
+    db.add(product)
+    db.commit()
+
+    variant = ProductVariant(
+        product_id=product.id,
+        sku="NOALRT-001-A",
+        sale_price=50.0,
+        cost_price=20.0,
+        reorder_point=5,
+    )
+    db.add(variant)
+    db.commit()
+    db.refresh(variant)
+
+    stock_service.adjust_stock(
+        db,
+        StockAdjustmentRequest(variant_id=variant.id, quantity=6, notes="Stock sobre umbral"),
+        user,
+    )
+
+    alerts = stock_service.get_low_stock_alerts(db)
+    alert_ids = [a.variant_id for a in alerts]
+    assert variant.id not in alert_ids
+
+
+# ---------------------------------------------------------------------------
+# TC-21 — REQ-F05 — Caja Blanca / Rama (qty < 0)
+# adjust_stock(quantity=-5) → movement_type=ADJUSTMENT_OUT, quantity=-5
+# ---------------------------------------------------------------------------
+def test_tc21_ajuste_stock_negativo_genera_adjustment_out(db):
+    user = create_test_user(db)
+    variant = create_test_variant(db)
+
+    stock_service.adjust_stock(
+        db,
+        StockAdjustmentRequest(variant_id=variant.id, quantity=20, notes="Ingreso previo"),
+        user,
+    )
+
+    movement = stock_service.adjust_stock(
+        db,
+        StockAdjustmentRequest(variant_id=variant.id, quantity=-5, notes="Salida manual"),
+        user,
+    )
+
+    assert movement.movement_type == MovementType.ADJUSTMENT_OUT
+    assert movement.quantity == -5
+
+
+# ---------------------------------------------------------------------------
+# TC-25 — REQ-F02, REQ-F03 — Caja Blanca / Sentencia Kardex
+# create_sale() genera StockMovement tipo SALE con quantity=-10
+# ---------------------------------------------------------------------------
+def test_tc25_venta_genera_movimiento_kardex_negativo(db):
+    from app.models.stock import StockMovement
+
+    user = create_test_user(db)
+    variant = create_test_variant(db)
+
+    stock_service.adjust_stock(
+        db,
+        StockAdjustmentRequest(variant_id=variant.id, quantity=50, notes="Stock inicial"),
+        user,
+    )
+
+    sale_data = SaleCreate(**{
+        "items": [{"variant_id": variant.id, "quantity": 10}],
+        "notes": "Venta TC-25",
+    })
+    stock_service.create_sale(db, sale_data, user)
+
+    movimientos = (
+        db.query(StockMovement)
+        .filter(
+            StockMovement.variant_id == variant.id,
+            StockMovement.movement_type == MovementType.SALE,
+        )
+        .all()
+    )
+    assert len(movimientos) == 1
+    assert movimientos[0].quantity == -10
+
+
+# ---------------------------------------------------------------------------
+# TC-26 — REQ-F02 — Caja Negra / Estado inválido
+# receive_purchase_order() sobre orden ya recibida → HTTPException 400
+# ---------------------------------------------------------------------------
+def test_tc26_recibir_orden_ya_recibida(db):
+    user = create_test_user(db)
+    supplier = create_test_supplier(db)
+    variant = create_test_variant(db)
+
+    po_data = PurchaseOrderCreate(
+        supplier_id=supplier.id,
+        notes="Orden doble recepción",
+        items=[{"variant_id": variant.id, "quantity": 50, "unit_cost": 30.0}],
+    )
+    order = stock_service.create_purchase_order(db, po_data, user)
+    stock_service.receive_purchase_order(db, order.id, user)
+
+    with pytest.raises(HTTPException) as exc_info:
+        stock_service.receive_purchase_order(db, order.id, user)
+    assert exc_info.value.status_code == 400
+
+
+# ---------------------------------------------------------------------------
+# TC-27 — REQ-F02 — Caja Blanca / Sentencia Kardex
+# receive_purchase_order() → StockMovement PURCHASE quantity=50, stock final=50
+# ---------------------------------------------------------------------------
+def test_tc27_recepcion_orden_genera_movimiento_purchase(db):
+    from app.models.stock import StockMovement
+
+    user = create_test_user(db)
+    supplier = create_test_supplier(db)
+    variant = create_test_variant(db)
+
+    po_data = PurchaseOrderCreate(
+        supplier_id=supplier.id,
+        notes="Orden TC-27",
+        items=[{"variant_id": variant.id, "quantity": 50, "unit_cost": 40.0}],
+    )
+    order = stock_service.create_purchase_order(db, po_data, user)
+    stock_service.receive_purchase_order(db, order.id, user)
+
+    movimientos = (
+        db.query(StockMovement)
+        .filter(
+            StockMovement.variant_id == variant.id,
+            StockMovement.movement_type == MovementType.PURCHASE,
+        )
+        .all()
+    )
+    assert len(movimientos) == 1
+    assert movimientos[0].quantity == 50
+    assert stock_service.get_current_stock(db, variant.id) == 50

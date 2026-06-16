@@ -105,7 +105,7 @@ StockSync/
 | --- | ----- | --------------------------------------------------------------- | ------ |
 | 1   | 29/04 | Conformación de grupos + idea                                   | ✅     |
 | 2   | 05/05 | Propuesta de proyecto (PDF)                                     | ✅     |
-| 3   | 20/05 | Plan SQA + métricas iniciales (LOC, CC, MI) + linter            | ⏳     |
+| 3   | 20/05 | Plan SQA + métricas iniciales (LOC, CC, MI) + linter            | ✅     |
 | 4   | 03/06 | Plan de pruebas + casos + reporte de defectos (cobertura ≥ 60%) | ⏳     |
 | 5   | 16/06 | Entrega final + RTM + wireframes + defensa oral                 | ⏳     |
 

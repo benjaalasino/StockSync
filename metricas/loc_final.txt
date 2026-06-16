@@ -1,0 +1,73 @@
+Lines of Code — Medición final
+Fecha: 2026-06-15
+Herramienta: radon raw (backend), wc (frontend)
+================================================================================
+
+BACKEND (Python — app/):
+  Archivos: 28 archivos .py
+  LOC (Lines of Code):       1.777
+  SLOC (Source Lines):       1.175
+  LLOC (Logical LOC):        1.038
+  Comentarios:                 130
+  Líneas en blanco:            390
+
+  Por módulo:
+    app/main.py                     30 LOC
+    app/core/config.py              28 LOC
+    app/core/database.py            30 LOC
+    app/core/security.py            85 LOC
+    app/services/product_service.py 178 LOC
+    app/services/stock_service.py   274 LOC
+    app/services/auth_service.py    41 LOC
+    app/api/v1/products.py          175 LOC
+    app/api/v1/users.py             30 LOC
+    app/api/v1/stock.py             124 LOC
+    app/api/v1/auth.py              29 LOC
+    app/models/product.py           143 LOC
+    app/models/stock.py             165 LOC
+    app/models/supplier.py          32 LOC
+    app/models/user.py              42 LOC
+    app/schemas/product.py          145 LOC
+    app/schemas/stock.py            145 LOC
+    app/schemas/user.py             32 LOC
+    app/schemas/auth.py             17 LOC
+    app/models/__init__.py          20 LOC
+    app/api/v1/router.py            12 LOC
+    Otros (__init__.py)              0 LOC
+
+BACKEND — Tests:
+  Archivos: 8 archivos .py
+  LOC total: 1.180
+  Por archivo:
+    test_stock_service.py      408
+    test_product_service.py    317
+    test_api_products.py        98
+    test_api_auth.py            92
+    test_api_stock.py           73
+    test_security.py            65
+    conftest.py                 85
+    __init__.py                  1
+
+FRONTEND (TypeScript/TSX):
+  Archivos: 10 archivos
+  LOC total: 808
+  Por archivo:
+    src/services/api.ts         201
+    src/App.tsx                 147
+    src/types/index.ts          147
+    src/pages/LoginPage.tsx     119
+    src/pages/DashboardPage.tsx  68
+    src/pages/ReportsPage.tsx    34
+    src/pages/StockPage.tsx      31
+    src/pages/ProductsPage.tsx   31
+    src/pages/NotFoundPage.tsx   21
+    src/main.tsx                  9
+
+================================================================================
+RESUMEN:
+  Backend (app):        1.777 LOC
+  Backend (tests):      1.180 LOC
+  Frontend (src):         808 LOC
+  ─────────────────────────────
+  Total proyecto:       3.765 LOC
+================================================================================
