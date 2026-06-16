@@ -282,7 +282,7 @@ def seed() -> None:
         print("✅ Seed completado:")
         print(f"   Productos: {len(products_cfg)} (con {total_variants} variantes)")
         print(f"   Clientes: {len(clients_data)}")
-        print(f"   Proveedores: 2")
+        print("   Proveedores: 2")
         print(f"   Ventas: {len(sales_cfg)}")
         print("   ─────────────────────────────────")
         print("   Admin:    admin@stocksync.com  /  Admin1234")
