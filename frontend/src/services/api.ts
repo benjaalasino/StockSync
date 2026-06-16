@@ -14,8 +14,12 @@ import type {
   StockSummary,
   StockMovement,
   Sale,
+  SaleCreate,
   PurchaseOrder,
   Supplier,
+  Client,
+  ClientCreate,
+  ClientUpdate,
 } from "@/types";
 
 const BASE_URL = "/api/v1";
@@ -153,13 +157,39 @@ export const stockApi = {
   },
 };
 
+// ─── Clients ─────────────────────────────────────────────────────────────────
+
+export const clientsApi = {
+  list: async (search?: string): Promise<Client[]> => {
+    const { data } = await apiClient.get<Client[]>("/clients/", { params: search ? { search } : {} });
+    return data;
+  },
+  get: async (id: number): Promise<Client> => {
+    const { data } = await apiClient.get<Client>(`/clients/${id}`);
+    return data;
+  },
+  create: async (payload: ClientCreate): Promise<Client> => {
+    const { data } = await apiClient.post<Client>("/clients/", payload);
+    return data;
+  },
+  update: async (id: number, payload: ClientUpdate): Promise<Client> => {
+    const { data } = await apiClient.patch<Client>(`/clients/${id}`, payload);
+    return data;
+  },
+  delete: async (id: number): Promise<Client> => {
+    const { data } = await apiClient.delete<Client>(`/clients/${id}`);
+    return data;
+  },
+};
+
 // ─── Sales ───────────────────────────────────────────────────────────────────
 
 export const salesApi = {
-  create: async (payload: {
-    items: { variant_id: number; quantity: number }[];
-    notes?: string;
-  }): Promise<Sale> => {
+  list: async (): Promise<Sale[]> => {
+    const { data } = await apiClient.get<Sale[]>("/stock/sales");
+    return data;
+  },
+  create: async (payload: SaleCreate): Promise<Sale> => {
     const { data } = await apiClient.post<Sale>("/stock/sales", payload);
     return data;
   },

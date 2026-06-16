@@ -11,13 +11,17 @@ import {
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import ProductsPage from "./pages/ProductsPage";
+import ClientsPage from "./pages/ClientsPage";
+import SalesPage from "./pages/SalesPage";
 import StockPage from "./pages/StockPage";
 import ReportsPage from "./pages/ReportsPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 const menuItems = [
   { label: "Dashboard", path: "/dashboard", icon: "home" },
+  { label: "Clientes", path: "/clients", icon: "people" },
   { label: "Productos", path: "/products", icon: "inventory_2" },
+  { label: "Ventas", path: "/sales", icon: "shopping_cart" },
   { label: "Stock", path: "/stock", icon: "warehouse" },
   { label: "Reportes", path: "/reports", icon: "assessment" },
 ];
@@ -98,20 +102,19 @@ function AppLayout({ onLogout }: { onLogout: () => void }) {
 }
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
-  const authenticated = Boolean(localStorage.getItem("stocksync-auth"));
+  const authenticated = Boolean(localStorage.getItem("access_token"));
   return authenticated ? children : <Navigate to="/login" replace />;
 }
 
 function App() {
-  const [authenticated, setAuthenticated] = useState(() => Boolean(localStorage.getItem("stocksync-auth")));
+  const [authenticated, setAuthenticated] = useState(() => Boolean(localStorage.getItem("access_token")));
 
   const handleLogin = () => {
-    localStorage.setItem("stocksync-auth", "true");
     setAuthenticated(true);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("stocksync-auth");
+    localStorage.removeItem("access_token");
     setAuthenticated(false);
   };
 
@@ -134,7 +137,9 @@ function App() {
         >
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="clients" element={<ClientsPage />} />
           <Route path="products" element={<ProductsPage />} />
+          <Route path="sales" element={<SalesPage />} />
           <Route path="stock" element={<StockPage />} />
           <Route path="reports" element={<ReportsPage />} />
           <Route path="*" element={<NotFoundPage />} />
