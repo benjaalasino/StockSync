@@ -24,7 +24,7 @@ from sqlalchemy.orm import relationship
 from app.core.database import Base
 
 
-class MovementType(str, enum.Enum):
+class MovementType(enum.StrEnum):
     PURCHASE = "PURCHASE"       # Ingreso por compra
     SALE = "SALE"               # Egreso por venta
     ADJUSTMENT_IN = "ADJUSTMENT_IN"    # Ajuste positivo (solo Admin)
@@ -70,7 +70,7 @@ class StockMovement(Base):
         )
 
 
-class PurchaseOrderStatus(str, enum.Enum):
+class PurchaseOrderStatus(enum.StrEnum):
     PENDING = "PENDING"
     CONFIRMED = "CONFIRMED"
     RECEIVED = "RECEIVED"

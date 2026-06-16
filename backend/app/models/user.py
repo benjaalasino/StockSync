@@ -11,7 +11,7 @@ from sqlalchemy.orm import relationship
 from app.core.database import Base
 
 
-class UserRole(str, enum.Enum):
+class UserRole(enum.StrEnum):
     ADMIN = "admin"
     OPERATOR = "operator"
 
