@@ -49,6 +49,7 @@ class StockSummary(BaseModel):
 class SaleItemCreate(BaseModel):
     variant_id: int
     quantity: int
+    unit_price: Decimal | None = None
 
     @field_validator("quantity")
     @classmethod
@@ -61,6 +62,7 @@ class SaleItemCreate(BaseModel):
 class SaleCreate(BaseModel):
     items: list[SaleItemCreate]
     notes: str | None = None
+    client_id: int | None = None
 
 
 class SaleItemResponse(BaseModel):
@@ -75,6 +77,8 @@ class SaleItemResponse(BaseModel):
 class SaleResponse(BaseModel):
     id: int
     created_by: int
+    client_id: int | None = None
+    client_name: str | None = None
     notes: str | None
     is_cancelled: bool
     created_at: datetime

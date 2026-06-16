@@ -1,0 +1,318 @@
+Requirement already satisfied: pip in c:\users\usuario\onedrive\documents\github\stocksync-nuevo\backend\.venv\lib\site-packages (25.0.1)
+Collecting pip
+  Using cached pip-26.1.1-py3-none-any.whl.metadata (4.6 kB)
+Using cached pip-26.1.1-py3-none-any.whl (1.8 MB)
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 25.0.1
+    Uninstalling pip-25.0.1:
+      Successfully uninstalled pip-25.0.1
+Successfully installed pip-26.1.1
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting fastapi==0.115.5 (from -r requirements.txt (line 1))
+  Using cached fastapi-0.115.5-py3-none-any.whl.metadata (27 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting uvicorn==0.32.1 (from uvicorn[standard]==0.32.1->-r requirements.txt (line 2))
+  Using cached uvicorn-0.32.1-py3-none-any.whl.metadata (6.6 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting sqlalchemy==2.0.36 (from -r requirements.txt (line 3))
+  Downloading SQLAlchemy-2.0.36-cp312-cp312-win_amd64.whl.metadata (9.9 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting psycopg2-binary==2.9.10 (from -r requirements.txt (line 4))
+  Downloading psycopg2_binary-2.9.10-cp312-cp312-win_amd64.whl.metadata (5.0 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting alembic==1.14.0 (from -r requirements.txt (line 5))
+  Using cached alembic-1.14.0-py3-none-any.whl.metadata (7.4 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting pydantic==2.10.3 (from -r requirements.txt (line 6))
+  Using cached pydantic-2.10.3-py3-none-any.whl.metadata (172 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting pydantic-settings==2.6.1 (from -r requirements.txt (line 7))
+  Using cached pydantic_settings-2.6.1-py3-none-any.whl.metadata (3.5 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting python-jose==3.3.0 (from python-jose[cryptography]==3.3.0->-r requirements.txt (line 9))
+  Using cached python_jose-3.3.0-py2.py3-none-any.whl.metadata (5.4 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting passlib==1.7.4 (from passlib[bcrypt]==1.7.4->-r requirements.txt (line 10))
+  Using cached passlib-1.7.4-py2.py3-none-any.whl.metadata (1.7 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting bcrypt==4.0.1 (from -r requirements.txt (line 11))
+  Using cached bcrypt-4.0.1-cp36-abi3-win_amd64.whl.metadata (9.0 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting python-multipart==0.0.17 (from -r requirements.txt (line 12))
+  Using cached python_multipart-0.0.17-py3-none-any.whl.metadata (1.8 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting starlette<0.42.0,>=0.40.0 (from fastapi==0.115.5->-r requirements.txt (line 1))
+  Using cached starlette-0.41.3-py3-none-any.whl.metadata (6.0 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting typing-extensions>=4.8.0 (from fastapi==0.115.5->-r requirements.txt (line 1))
+  Using cached typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting annotated-types>=0.6.0 (from pydantic==2.10.3->-r requirements.txt (line 6))
+  Using cached annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting pydantic-core==2.27.1 (from pydantic==2.10.3->-r requirements.txt (line 6))
+  Downloading pydantic_core-2.27.1-cp312-none-win_amd64.whl.metadata (6.7 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting click>=7.0 (from uvicorn==0.32.1->uvicorn[standard]==0.32.1->-r requirements.txt (line 2))
+  Using cached click-8.4.1-py3-none-any.whl.metadata (2.6 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting h11>=0.8 (from uvicorn==0.32.1->uvicorn[standard]==0.32.1->-r requirements.txt (line 2))
+  Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting greenlet!=0.4.17 (from sqlalchemy==2.0.36->-r requirements.txt (line 3))
+  Downloading greenlet-3.5.1-cp312-cp312-win_amd64.whl.metadata (3.9 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting Mako (from alembic==1.14.0->-r requirements.txt (line 5))
+  Using cached mako-1.3.12-py3-none-any.whl.metadata (2.9 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting python-dotenv>=0.21.0 (from pydantic-settings==2.6.1->-r requirements.txt (line 7))
+  Using cached python_dotenv-1.2.2-py3-none-any.whl.metadata (27 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting ecdsa!=0.15 (from python-jose==3.3.0->python-jose[cryptography]==3.3.0->-r requirements.txt (line 9))
+  Using cached ecdsa-0.19.2-py2.py3-none-any.whl.metadata (29 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting rsa (from python-jose==3.3.0->python-jose[cryptography]==3.3.0->-r requirements.txt (line 9))
+  Using cached rsa-4.9.1-py3-none-any.whl.metadata (5.6 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting pyasn1 (from python-jose==3.3.0->python-jose[cryptography]==3.3.0->-r requirements.txt (line 9))
+  Using cached pyasn1-0.6.3-py3-none-any.whl.metadata (8.4 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting email-validator>=2.0.0 (from pydantic[email]==2.10.3->-r requirements.txt (line 8))
+  Using cached email_validator-2.3.0-py3-none-any.whl.metadata (26 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting cryptography>=3.4.0 (from python-jose[cryptography]==3.3.0->-r requirements.txt (line 9))
+  Using cached cryptography-48.0.0-cp311-abi3-win_amd64.whl.metadata (4.3 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting colorama>=0.4 (from uvicorn[standard]==0.32.1->-r requirements.txt (line 2))
+  Using cached colorama-0.4.6-py2.py3-none-any.whl.metadata (17 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting httptools>=0.6.3 (from uvicorn[standard]==0.32.1->-r requirements.txt (line 2))
+  Downloading httptools-0.8.0-cp312-cp312-win_amd64.whl.metadata (3.7 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting pyyaml>=5.1 (from uvicorn[standard]==0.32.1->-r requirements.txt (line 2))
+  Downloading pyyaml-6.0.3-cp312-cp312-win_amd64.whl.metadata (2.4 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting watchfiles>=0.13 (from uvicorn[standard]==0.32.1->-r requirements.txt (line 2))
+  Downloading watchfiles-1.2.0-cp312-cp312-win_amd64.whl.metadata (5.0 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting websockets>=10.4 (from uvicorn[standard]==0.32.1->-r requirements.txt (line 2))
+  Downloading websockets-16.0-cp312-cp312-win_amd64.whl.metadata (7.0 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting anyio<5,>=3.4.0 (from starlette<0.42.0,>=0.40.0->fastapi==0.115.5->-r requirements.txt (line 1))
+  Using cached anyio-4.13.0-py3-none-any.whl.metadata (4.5 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting idna>=2.8 (from anyio<5,>=3.4.0->starlette<0.42.0,>=0.40.0->fastapi==0.115.5->-r requirements.txt (line 1))
+  Using cached idna-3.16-py3-none-any.whl.metadata (6.4 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting cffi>=2.0.0 (from cryptography>=3.4.0->python-jose[cryptography]==3.3.0->-r requirements.txt (line 9))
+  Downloading cffi-2.0.0-cp312-cp312-win_amd64.whl.metadata (2.6 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting pycparser (from cffi>=2.0.0->cryptography>=3.4.0->python-jose[cryptography]==3.3.0->-r requirements.txt (line 9))
+  Using cached pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting six>=1.9.0 (from ecdsa!=0.15->python-jose==3.3.0->python-jose[cryptography]==3.3.0->-r requirements.txt (line 9))
+  Using cached six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting dnspython>=2.0.0 (from email-validator>=2.0.0->pydantic[email]==2.10.3->-r requirements.txt (line 8))
+  Using cached dnspython-2.8.0-py3-none-any.whl.metadata (5.7 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting MarkupSafe>=0.9.2 (from Mako->alembic==1.14.0->-r requirements.txt (line 5))
+  Downloading markupsafe-3.0.3-cp312-cp312-win_amd64.whl.metadata (2.8 kB)
+Using cached fastapi-0.115.5-py3-none-any.whl (94 kB)
+Using cached pydantic-2.10.3-py3-none-any.whl (456 kB)
+Using cached uvicorn-0.32.1-py3-none-any.whl (63 kB)
+Downloading SQLAlchemy-2.0.36-cp312-cp312-win_amd64.whl (2.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 7.8 MB/s  0:00:00
+Downloading psycopg2_binary-2.9.10-cp312-cp312-win_amd64.whl (1.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 9.6 MB/s  0:00:00
+Using cached alembic-1.14.0-py3-none-any.whl (233 kB)
+Using cached pydantic_settings-2.6.1-py3-none-any.whl (28 kB)
+Using cached python_jose-3.3.0-py2.py3-none-any.whl (33 kB)
+Using cached passlib-1.7.4-py2.py3-none-any.whl (525 kB)
+Using cached bcrypt-4.0.1-cp36-abi3-win_amd64.whl (152 kB)
+Using cached python_multipart-0.0.17-py3-none-any.whl (24 kB)
+Downloading pydantic_core-2.27.1-cp312-none-win_amd64.whl (2.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.0/2.0 MB 10.0 MB/s  0:00:00
+Using cached starlette-0.41.3-py3-none-any.whl (73 kB)
+Using cached anyio-4.13.0-py3-none-any.whl (114 kB)
+Using cached annotated_types-0.7.0-py3-none-any.whl (13 kB)
+Using cached click-8.4.1-py3-none-any.whl (116 kB)
+Using cached colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Using cached cryptography-48.0.0-cp311-abi3-win_amd64.whl (3.8 MB)
+Downloading cffi-2.0.0-cp312-cp312-win_amd64.whl (183 kB)
+Using cached ecdsa-0.19.2-py2.py3-none-any.whl (150 kB)
+Using cached email_validator-2.3.0-py3-none-any.whl (35 kB)
+Using cached dnspython-2.8.0-py3-none-any.whl (331 kB)
+Downloading greenlet-3.5.1-cp312-cp312-win_amd64.whl (238 kB)
+Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+Downloading httptools-0.8.0-cp312-cp312-win_amd64.whl (90 kB)
+Using cached idna-3.16-py3-none-any.whl (74 kB)
+Using cached python_dotenv-1.2.2-py3-none-any.whl (22 kB)
+Downloading pyyaml-6.0.3-cp312-cp312-win_amd64.whl (154 kB)
+Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+Using cached typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+Downloading watchfiles-1.2.0-cp312-cp312-win_amd64.whl (288 kB)
+Downloading websockets-16.0-cp312-cp312-win_amd64.whl (178 kB)
+Using cached mako-1.3.12-py3-none-any.whl (78 kB)
+Downloading markupsafe-3.0.3-cp312-cp312-win_amd64.whl (15 kB)
+Using cached pyasn1-0.6.3-py3-none-any.whl (83 kB)
+Using cached pycparser-3.0-py3-none-any.whl (48 kB)
+Using cached rsa-4.9.1-py3-none-any.whl (34 kB)
+Installing collected packages: passlib, websockets, typing-extensions, six, pyyaml, python-multipart, python-dotenv, pycparser, pyasn1, psycopg2-binary, MarkupSafe, idna, httptools, h11, greenlet, dnspython, colorama, bcrypt, annotated-types, sqlalchemy, rsa, pydantic-core, Mako, email-validator, ecdsa, click, cffi, anyio, watchfiles, uvicorn, starlette, python-jose, pydantic, cryptography, alembic, pydantic-settings, fastapi
+Successfully installed Mako-1.3.12 MarkupSafe-3.0.3 alembic-1.14.0 annotated-types-0.7.0 anyio-4.13.0 bcrypt-4.0.1 cffi-2.0.0 click-8.4.1 colorama-0.4.6 cryptography-48.0.0 dnspython-2.8.0 ecdsa-0.19.2 email-validator-2.3.0 fastapi-0.115.5 greenlet-3.5.1 h11-0.16.0 httptools-0.8.0 idna-3.16 passlib-1.7.4 psycopg2-binary-2.9.10 pyasn1-0.6.3 pycparser-3.0 pydantic-2.10.3 pydantic-core-2.27.1 pydantic-settings-2.6.1 python-dotenv-1.2.2 python-jose-3.3.0 python-multipart-0.0.17 pyyaml-6.0.3 rsa-4.9.1 six-1.17.0 sqlalchemy-2.0.36 starlette-0.41.3 typing-extensions-4.15.0 uvicorn-0.32.1 watchfiles-1.2.0 websockets-16.0
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting ruff==0.4.10 (from -r requirements-dev.txt (line 2))
+  Using cached ruff-0.4.10-py3-none-win_amd64.whl.metadata (24 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting pytest==8.2.2 (from -r requirements-dev.txt (line 5))
+  Using cached pytest-8.2.2-py3-none-any.whl.metadata (7.6 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting pytest-cov==5.0.0 (from -r requirements-dev.txt (line 6))
+  Using cached pytest_cov-5.0.0-py3-none-any.whl.metadata (27 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting pytest-asyncio==0.23.7 (from -r requirements-dev.txt (line 7))
+  Using cached pytest_asyncio-0.23.7-py3-none-any.whl.metadata (3.9 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting httpx==0.27.0 (from -r requirements-dev.txt (line 8))
+  Using cached httpx-0.27.0-py3-none-any.whl.metadata (7.2 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting radon==6.0.1 (from -r requirements-dev.txt (line 11))
+  Using cached radon-6.0.1-py2.py3-none-any.whl.metadata (8.2 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting iniconfig (from pytest==8.2.2->-r requirements-dev.txt (line 5))
+  Using cached iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting packaging (from pytest==8.2.2->-r requirements-dev.txt (line 5))
+  Using cached packaging-26.2-py3-none-any.whl.metadata (3.5 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting pluggy<2.0,>=1.5 (from pytest==8.2.2->-r requirements-dev.txt (line 5))
+  Using cached pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+Requirement already satisfied: colorama in .\.venv\Lib\site-packages (from pytest==8.2.2->-r requirements-dev.txt (line 5)) (0.4.6)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting coverage>=5.2.1 (from coverage[toml]>=5.2.1->pytest-cov==5.0.0->-r requirements-dev.txt (line 6))
+  Downloading coverage-7.14.0-cp312-cp312-win_amd64.whl.metadata (8.7 kB)
+Requirement already satisfied: anyio in .\.venv\Lib\site-packages (from httpx==0.27.0->-r requirements-dev.txt (line 8)) (4.13.0)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting certifi (from httpx==0.27.0->-r requirements-dev.txt (line 8))
+  Using cached certifi-2026.5.20-py3-none-any.whl.metadata (2.5 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting httpcore==1.* (from httpx==0.27.0->-r requirements-dev.txt (line 8))
+  Using cached httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Requirement already satisfied: idna in .\.venv\Lib\site-packages (from httpx==0.27.0->-r requirements-dev.txt (line 8)) (3.16)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting sniffio (from httpx==0.27.0->-r requirements-dev.txt (line 8))
+  Using cached sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting mando<0.8,>=0.6 (from radon==6.0.1->-r requirements-dev.txt (line 11))
+  Using cached mando-0.7.1-py2.py3-none-any.whl.metadata (7.4 kB)
+Requirement already satisfied: h11>=0.16 in .\.venv\Lib\site-packages (from httpcore==1.*->httpx==0.27.0->-r requirements-dev.txt (line 8)) (0.16.0)
+Requirement already satisfied: six in .\.venv\Lib\site-packages (from mando<0.8,>=0.6->radon==6.0.1->-r requirements-dev.txt (line 11)) (1.17.0)
+Requirement already satisfied: typing_extensions>=4.5 in .\.venv\Lib\site-packages (from anyio->httpx==0.27.0->-r requirements-dev.txt (line 8)) (4.15.0)
+Using cached ruff-0.4.10-py3-none-win_amd64.whl (8.5 MB)
+Using cached pytest-8.2.2-py3-none-any.whl (339 kB)
+Using cached pytest_cov-5.0.0-py3-none-any.whl (21 kB)
+Using cached pytest_asyncio-0.23.7-py3-none-any.whl (17 kB)
+Using cached httpx-0.27.0-py3-none-any.whl (75 kB)
+Using cached radon-6.0.1-py2.py3-none-any.whl (52 kB)
+Using cached httpcore-1.0.9-py3-none-any.whl (78 kB)
+Using cached mando-0.7.1-py2.py3-none-any.whl (28 kB)
+Using cached pluggy-1.6.0-py3-none-any.whl (20 kB)
+Downloading coverage-7.14.0-cp312-cp312-win_amd64.whl (223 kB)
+Using cached certifi-2026.5.20-py3-none-any.whl (134 kB)
+Using cached iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+Using cached packaging-26.2-py3-none-any.whl (100 kB)
+Using cached sniffio-1.3.1-py3-none-any.whl (10 kB)
+Installing collected packages: sniffio, ruff, pluggy, packaging, mando, iniconfig, coverage, certifi, radon, pytest, httpcore, pytest-cov, pytest-asyncio, httpx
+Successfully installed certifi-2026.5.20 coverage-7.14.0 httpcore-1.0.9 httpx-0.27.0 iniconfig-2.3.0 mando-0.7.1 packaging-26.2 pluggy-1.6.0 pytest-8.2.2 pytest-asyncio-0.23.7 pytest-cov-5.0.0 radon-6.0.1 ruff-0.4.10 sniffio-1.3.1
+(.venv) PS C:\Users\Usuario\OneDrive\Documents\GitHub\StockSync-nuevo\backend> python -m pytest --cov=app --cov-report=xml --cov-fail-under=60 -v 
+====================================== test session starts =======================================
+platform win32 -- Python 3.12.10, pytest-8.2.2, pluggy-1.6.0 -- C:\Users\Usuario\OneDrive\Documents\GitHub\StockSync-nuevo\backend\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Usuario\OneDrive\Documents\GitHub\StockSync-nuevo\backend
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.13.0, asyncio-0.23.7, cov-5.0.0
+asyncio: mode=Mode.STRICT
+collected 22 items                                                                                
+
+tests/test_auth_service.py::test_create_user_success PASSED                                 [  4%]
+tests/test_auth_service.py::test_create_user_duplicate_email PASSED                         [  9%]
+tests/test_product_service.py::test_create_category_success PASSED                          [ 13%]
+tests/test_product_service.py::test_create_category_duplicate_name PASSED                   [ 18%]
+tests/test_product_service.py::test_create_product_success PASSED                           [ 22%]
+tests/test_product_service.py::test_create_product_duplicate_sku PASSED                     [ 27%]
+tests/test_product_service.py::test_update_product_success PASSED                           [ 31%]
+tests/test_product_service.py::test_update_product_not_found PASSED                         [ 36%]
+tests/test_product_service.py::test_delete_product_success PASSED                           [ 40%]
+tests/test_product_service.py::test_delete_product_not_found PASSED                         [ 45%]
+tests/test_product_service.py::test_build_sku_success PASSED                                [ 50%]
+tests/test_product_service.py::test_add_variant_success PASSED                              [ 54%]
+tests/test_product_service.py::test_add_variant_duplicate PASSED                            [ 59%]
+tests/test_product_service.py::test_generate_variants_success PASSED                        [ 63%]
+tests/test_product_service.py::test_update_variant_success PASSED                           [ 68%]
+tests/test_stock_service.py::test_get_current_stock_initial PASSED                          [ 72%]
+tests/test_stock_service.py::test_adjust_stock_success PASSED                               [ 77%]
+tests/test_stock_service.py::test_create_sale_insufficient_stock PASSED                     [ 81%]
+tests/test_stock_service.py::test_create_sale_success PASSED                                [ 86%]
+tests/test_stock_service.py::test_create_purchase_order_success PASSED                      [ 90%]
+tests/test_stock_service.py::test_receive_purchase_order_success PASSED                     [ 95%]
+tests/test_stock_service.py::test_create_supplier PASSED                                    [100%]
+
+======================================== warnings summary ========================================
+.venv\Lib\site-packages\pydantic\_internal\_config.py:295
+  C:\Users\Usuario\OneDrive\Documents\GitHub\StockSync-nuevo\backend\.venv\Lib\site-packages\pydantic\_internal\_config.py:295: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.10/migration/
+    warnings.warn(DEPRECATION_MESSAGE, DeprecationWarning)
+
+tests/test_auth_service.py: 4 warnings
+tests/test_product_service.py: 27 warnings
+tests/test_stock_service.py: 39 warnings
+  C:\Users\Usuario\OneDrive\Documents\GitHub\StockSync-nuevo\backend\.venv\Lib\site-packages\sqlalchemy\sql\schema.py:3596: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+
+tests/test_stock_service.py::test_receive_purchase_order_success
+  C:\Users\Usuario\OneDrive\Documents\GitHub\StockSync-nuevo\backend\app\services\stock_service.py:257: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    order.received_at = datetime.utcnow()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform win32, python 3.12.10-final-0 ----------
+Name                              Stmts   Miss  Cover   Missing
+---------------------------------------------------------------
+app\__init__.py                       0      0   100%
+app\api\__init__.py                   0      0   100%
+app\api\v1\__init__.py                0      0   100%
+app\api\v1\auth.py                   21     21     0%   3-40
+app\api\v1\clients.py                24     24     0%   1-58
+app\api\v1\products.py               63     63     0%   3-175
+app\api\v1\router.py                  8      8     0%   3-13
+app\api\v1\stock.py                  37     37     0%   3-132
+app\api\v1\users.py                  13     13     0%   3-30
+app\core\__init__.py                  0      0   100%
+app\core\config.py                   14      0   100%
+app\core\database.py                 13      4    69%   26-30
+app\core\security.py                 38     21    45%   29, 37-41, 45-48, 63-73, 78-85
+app\main.py                          10     10     0%   3-30
+app\models\__init__.py                5      0   100%
+app\models\client.py                 15      0   100%
+app\models\product.py                61      5    92%   50, 64, 86, 113, 143
+app\models\stock.py                  86      6    93%   68, 105, 125, 151, 154, 172
+app\models\supplier.py               18      1    94%   32
+app\models\user.py                   25      2    92%   38, 42
+app\repositories\__init__.py          0      0   100%
+app\schemas\__init__.py               0      0   100%
+app\schemas\auth.py                   9      9     0%   3-17
+app\schemas\client.py                27     27     0%   1-35
+app\schemas\product.py               83      0   100%
+app\schemas\stock.py                 95      1    99%   58
+app\schemas\user.py                  21      0   100%
+app\services\__init__.py              0      0   100%
+app\services\auth_service.py         22      5    77%   15-21, 38
+app\services\client_service.py       40     40     0%   1-57
+app\services\product_service.py      90      8    91%   28, 45, 136, 164, 172-175
+app\services\stock_service.py       101     23    77%   57-61, 72, 82-96, 108, 150-151, 192, 203, 216-217, 237, 239, 267
+---------------------------------------------------------------
+TOTAL                               939    328    65%
+Coverage XML written to file coverage.xml
+
+Required test coverage of 60% reached. Total coverage: 65.07%
+================================ 22 passed, 72 warnings in 9.49s =================================
