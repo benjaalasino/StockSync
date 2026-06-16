@@ -1,17 +1,35 @@
-version: "3.9"
-
 services:
+  db:
+    image: postgres:16-alpine
+    container_name: stocksync_db
+    environment:
+      POSTGRES_USER: stocksync
+      POSTGRES_PASSWORD: stocksync
+      POSTGRES_DB: stocksync
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U stocksync"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   backend:
     build: ./backend
     container_name: stocksync_backend
     command: >
-      sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+      sh -c "alembic upgrade head && python seed.py && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
     volumes:
       - ./backend:/app
     ports:
       - "8000:8000"
     env_file:
       - ./backend/.env
+    depends_on:
+      db:
+        condition: service_healthy
 
   frontend:
     build: ./frontend
@@ -20,3 +38,6 @@ services:
       - "5173:80"
     depends_on:
       - backend
+
+volumes:
+  postgres_data:

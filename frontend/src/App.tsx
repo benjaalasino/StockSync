@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   BrowserRouter,
   NavLink,
@@ -16,6 +16,8 @@ import SalesPage from "./pages/SalesPage";
 import StockPage from "./pages/StockPage";
 import ReportsPage from "./pages/ReportsPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import { authApi } from "./services/api";
+import type { User } from "./types";
 
 const menuItems = [
   { label: "Dashboard", path: "/dashboard", icon: "home" },
@@ -26,7 +28,7 @@ const menuItems = [
   { label: "Reportes", path: "/reports", icon: "assessment" },
 ];
 
-function AppLayout({ onLogout }: { onLogout: () => void }) {
+function AppLayout({ user, onLogout }: { user: User | null; onLogout: () => void }) {
   const location = useLocation();
   const pageTitle = menuItems.find((item) => item.path === location.pathname)?.label || "StockSync";
 
@@ -66,10 +68,12 @@ function AppLayout({ onLogout }: { onLogout: () => void }) {
 
         <div className="mt-auto rounded-3xl bg-surface p-5 shadow-soft-bloom-shadow ring-1 ring-outline-variant">
           <div className="mb-3 flex items-center gap-3">
-            <div className="h-11 w-11 rounded-2xl bg-secondary-container"></div>
+            <div className="h-11 w-11 rounded-2xl bg-secondary-container flex items-center justify-center text-on-secondary-container font-semibold text-sm">
+              {user?.full_name?.charAt(0).toUpperCase() ?? "?"}
+            </div>
             <div>
-              <p className="font-semibold text-on-surface">Admin</p>
-              <p className="text-sm text-on-surface-variant">Acceso demo</p>
+              <p className="font-semibold text-on-surface">{user?.full_name ?? "—"}</p>
+              <p className="text-sm text-on-surface-variant capitalize">{user?.role ?? "—"}</p>
             </div>
           </div>
           <button
@@ -94,7 +98,7 @@ function AppLayout({ onLogout }: { onLogout: () => void }) {
         </header>
 
         <main className="p-8">
-          <Outlet />
+          <Outlet context={{ user }} />
         </main>
       </div>
     </div>
@@ -108,14 +112,33 @@ function ProtectedRoute({ children }: { children: JSX.Element }) {
 
 function App() {
   const [authenticated, setAuthenticated] = useState(() => Boolean(localStorage.getItem("access_token")));
+  const [user, setUser] = useState<User | null>(null);
 
-  const handleLogin = () => {
+  // Restore user profile when already authenticated (e.g. page refresh)
+  useEffect(() => {
+    if (authenticated && !user) {
+      authApi.me().then(setUser).catch(() => {
+        // Token invalid — clear and redirect
+        localStorage.removeItem("access_token");
+        setAuthenticated(false);
+      });
+    }
+  }, [authenticated, user]);
+
+  const handleLogin = async () => {
     setAuthenticated(true);
+    try {
+      const u = await authApi.me();
+      setUser(u);
+    } catch {
+      // ignore — layout will show placeholder
+    }
   };
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     setAuthenticated(false);
+    setUser(null);
   };
 
   return (
@@ -131,16 +154,16 @@ function App() {
           path="/"
           element={
             <ProtectedRoute>
-              <AppLayout onLogout={handleLogout} />
+              <AppLayout user={user} onLogout={handleLogout} />
             </ProtectedRoute>
           }
         >
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="clients" element={<ClientsPage />} />
-          <Route path="products" element={<ProductsPage />} />
+          <Route path="products" element={<ProductsPage user={user} />} />
           <Route path="sales" element={<SalesPage />} />
-          <Route path="stock" element={<StockPage />} />
+          <Route path="stock" element={<StockPage user={user} />} />
           <Route path="reports" element={<ReportsPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>

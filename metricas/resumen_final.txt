@@ -1,15 +1,15 @@
 RESUMEN DE MÉTRICAS — StockSync — Entrega Final
-Fecha: 2026-06-15
+Fecha: 2026-06-16
 Grupo 5: Alasino, Calvo, Contreras, González
 ================================================================================
 
 ┌────────────────────────┬───────────────────┬──────────┬──────────┐
 │ Métrica                │ Valor             │ Umbral   │ Estado   │
 ├────────────────────────┼───────────────────┼──────────┼──────────┤
-│ LOC (Backend app)      │ 1.777             │ —        │ —        │
-│ LOC (Backend tests)    │ 1.180             │ —        │ —        │
-│ LOC (Frontend)         │ 808               │ —        │ —        │
-│ LOC (Total proyecto)   │ 3.765             │ —        │ —        │
+│ LOC (Backend app)      │ 2.027             │ —        │ —        │
+│ LOC (Backend tests)    │ 1.380             │ —        │ —        │
+│ LOC (Frontend)         │ 1.548             │ —        │ —        │
+│ LOC (Total proyecto)   │ 4.955             │ —        │ —        │
 ├────────────────────────┼───────────────────┼──────────┼──────────┤
 │ CC promedio            │ 1.47              │ ≤ 10     │ ✅       │
 │ CC máxima              │ 5                 │ ≤ 10     │ ✅       │
@@ -17,22 +17,22 @@ Grupo 5: Alasino, Calvo, Contreras, González
 │ MI mínimo              │ 55.21 (user.py)   │ ≥ 40     │ ✅       │
 │ MI — Todos grado A     │ Sí                │ —        │ ✅       │
 ├────────────────────────┼───────────────────┼──────────┼──────────┤
-│ Cobertura global       │ 91.37%            │ ≥ 80%    │ ✅       │
-│ Tests totales          │ 48 (100% pasan)   │ —        │ ✅       │
+│ Cobertura global       │ 92.15%            │ ≥ 80%    │ ✅       │
+│ Tests totales          │ 59 (100% pasan)   │ —        │ ✅       │
 ├────────────────────────┼───────────────────┼──────────┼──────────┤
 │ Defectos encontrados   │ 3                 │ —        │ —        │
-│ Defectos / KLOC        │ 1.16              │ < 2      │ ✅       │
+│ Defectos / KLOC        │ 0.84              │ < 2      │ ✅       │
 └────────────────────────┴───────────────────┴──────────┴──────────┘
 
 EVOLUCIÓN vs. HITO 3 (2026-05-15):
   ┌────────────────────┬────────────┬────────────┬──────────┐
   │ Métrica            │ Inicial    │ Final      │ Cambio   │
   ├────────────────────┼────────────┼────────────┼──────────┤
-  │ LOC (backend app)  │ 1.682      │ 1.777      │ +95      │
+  │ LOC (backend app)  │ 1.682      │ 2.027      │ +345     │
   │ CC promedio        │ 1.47       │ 1.47       │ —        │
   │ MI mínimo          │ 55.21      │ 55.21      │ —        │
-  │ Cobertura          │ —          │ 91.37%     │ N/A      │
-  │ Defectos/KLOC      │ —          │ 1.16       │ N/A      │
+  │ Cobertura          │ 60% (Hito 4) │ 92.15%     │ +32.15%  │
+  │ Defectos/KLOC      │ N/A        │ 0.84       │ N/A      │
   └────────────────────┴────────────┴────────────┴──────────┘
 
 CONCLUSIÓN:
