@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(docker compose *)"
+      "Bash(docker compose *)",
+      "Skill(run)",
+      "Skill(run:*)",
+      "Bash(npx tsc *)"
     ]
   }
 }

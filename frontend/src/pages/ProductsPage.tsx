@@ -1,36 +1,72 @@
 import { useState, useEffect } from 'react'
-import { productsApi } from '../services/api'
-import type { Product, ProductVariant } from '../types'
+import { productsApi, categoriesApi } from '../services/api'
+import type { Product, ProductVariant, Category, User } from '../types'
 
-export default function ProductsPage() {
+export default function ProductsPage({ user }: { user: User | null }) {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [expandedId, setExpandedId] = useState<number | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
 
-  useEffect(() => {
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ message, type })
+    setTimeout(() => setToast(null), 3000)
+  }
+
+  const fetchProducts = () => {
+    setLoading(true)
     productsApi.list()
       .then(setProducts)
       .catch(() => setError('Error al cargar productos'))
       .finally(() => setLoading(false))
-  }, [])
+  }
+
+  useEffect(() => { fetchProducts() }, [])
+
+  const isAdmin = user?.role === 'admin'
 
   if (loading) return <div className="p-6 text-gray-400">Cargando productos...</div>
   if (error) return <div className="p-6 text-red-500">{error}</div>
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
+      {/* Toast */}
+      {toast && (
+        <div className={`fixed bottom-6 right-6 z-50 rounded-3xl px-6 py-4 text-sm font-semibold shadow-lg ${
+          toast.type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+        }`}>
+          {toast.message}
+        </div>
+      )}
+
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-semibold text-gray-900">Productos</h1>
-          <p className="text-sm text-gray-500 mt-1">{products.length} producto{products.length !== 1 ? 's' : ''}</p>
+          <p className="text-sm text-gray-500 mt-1">
+            {products.filter(p => p.is_active).length} producto{products.filter(p => p.is_active).length !== 1 ? 's' : ''} activos
+          </p>
         </div>
+        {isAdmin && (
+          <button
+            type="button"
+            onClick={() => setModalOpen(true)}
+            className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+          >
+            + Nuevo producto
+          </button>
+        )}
       </div>
 
       {products.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
           <p className="text-lg">No hay productos cargados</p>
-          <p className="text-sm mt-1">Usá el Swagger UI en <code>localhost:8000/docs</code> para crear el primer producto</p>
+          {isAdmin && (
+            <p className="text-sm mt-2">
+              Usá el botón <strong>"+ Nuevo producto"</strong> para comenzar.
+            </p>
+          )}
         </div>
       ) : (
         <div className="space-y-3">
@@ -43,6 +79,14 @@ export default function ProductsPage() {
             />
           ))}
         </div>
+      )}
+
+      {modalOpen && (
+        <NewProductModal
+          onClose={() => setModalOpen(false)}
+          onCreated={() => { fetchProducts(); setModalOpen(false); showToast('Producto creado', 'success') }}
+          onError={(msg) => showToast(msg, 'error')}
+        />
       )}
     </div>
   )
@@ -131,5 +175,127 @@ function VariantRow({ variant }: { variant: ProductVariant }) {
       </td>
       <td className="py-2 text-right text-gray-400 text-xs">{variant.reorder_point}</td>
     </tr>
+  )
+}
+
+function NewProductModal({
+  onClose,
+  onCreated,
+  onError,
+}: {
+  onClose: () => void
+  onCreated: () => void
+  onError: (msg: string) => void
+}) {
+  const [categories, setCategories] = useState<Category[]>([])
+  const [form, setForm] = useState({ name: '', base_sku: '', brand: '', category_id: '' })
+  const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    categoriesApi.list().then(setCategories).catch(() => {})
+  }, [])
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!form.name.trim() || !form.base_sku.trim()) {
+      onError('Nombre y SKU Base son obligatorios')
+      return
+    }
+    setSaving(true)
+    try {
+      await productsApi.create({
+        name: form.name.trim(),
+        base_sku: form.base_sku.trim().toUpperCase(),
+        brand: form.brand.trim() || undefined,
+        category_id: form.category_id ? Number(form.category_id) : undefined,
+      })
+      onCreated()
+    } catch (err: any) {
+      onError(err?.response?.data?.detail || 'Error al crear el producto')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
+      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl ring-1 ring-gray-200">
+        <h2 className="text-lg font-semibold text-gray-900">Nuevo producto</h2>
+        <p className="mt-1 text-sm text-gray-500">
+          Creá el producto base. Las variantes se generan desde la API o Swagger.
+        </p>
+
+        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Nombre <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Ej: Remera Básica"
+              value={form.name}
+              onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+              className="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500">
+              SKU Base <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Ej: REM-BAS"
+              value={form.base_sku}
+              onChange={e => setForm(f => ({ ...f, base_sku: e.target.value.toUpperCase() }))}
+              className="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-mono focus:border-indigo-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Marca
+            </label>
+            <input
+              type="text"
+              placeholder="Ej: BasiX"
+              value={form.brand}
+              onChange={e => setForm(f => ({ ...f, brand: e.target.value }))}
+              className="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Categoría
+            </label>
+            <select
+              value={form.category_id}
+              onChange={e => setForm(f => ({ ...f, category_id: e.target.value }))}
+              className="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none"
+            >
+              <option value="">Sin categoría</option>
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-600 transition hover:bg-gray-50"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={saving}
+              className="flex-1 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-50"
+            >
+              {saving ? 'Creando...' : 'Crear producto'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   )
 }
