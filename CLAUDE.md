@@ -123,24 +123,15 @@ docker compose up --build
 
 ---
 
-## Lo que está implementado vs. lo que falta
+## Estado del Desarrollo
 
 ### Backend — completo
 
-- Todos los modelos, schemas, servicios y routers están implementados
-- La API es funcional y testeable desde Swagger UI
+Todos los modelos, schemas, servicios y routers están implementados para las funcionalidades principales (Productos, Stock, Ventas, Clientes, Usuarios, RBAC). La API es funcional y está cubierta por 59 tests automatizados.
 
-### Frontend — estructura base lista, páginas pendientes
+### Frontend — Funcional
 
-Falta construir las páginas React en `src/pages/`:
-
-- `auth/` — Login
-- `dashboard/` — Resumen + alertas de stock bajo
-- `products/` — Catálogo, creación de productos y generación de variantes
-- `sales/` — Registro de ventas
-- `purchases/` — Órdenes de compra y recepción de mercadería
-
-La capa de comunicación con la API ya está en `src/services/api.ts` con todos los métodos necesarios.
+Las páginas principales están implementadas y conectadas al backend: Login, Dashboard, Clientes, Productos y Ventas. La capa de comunicación con la API (`src/services/api.ts`) está completa y utiliza TanStack Query para la gestión del estado asíncrono.
 
 ---
 

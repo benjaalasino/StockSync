@@ -1,5 +1,5 @@
 Defectos / KLOC — Medición final
-Fecha: 2026-06-15
+Fecha: 2026-06-16
 Fuente: git log --grep="fix\|bug" --since=2026-05-15
 ================================================================================
 
@@ -7,25 +7,25 @@ DEFECTOS IDENTIFICADOS (post-Hito 3):
 
   ID   Commit    Descripción
   ────────────────────────────────────────────────────────────
-  D01  d2692b3   fix: corregir errores de Ruff y agregar SECRET_KEY en CI
-  D02  2604d6d   fix: downgrade bcrypt a 3.2.2 para compatibilidad con passlib
-  D03  ba3d427   fix: corregir todos los errores de Ruff (I001, E712, W291, W292, W293)
+  D01  d2692b3   fix: corregir errores de Ruff y agregar SECRET_KEY en CI (resuelto)
+  D02  2604d6d   fix: downgrade bcrypt a 3.2.2 para compatibilidad con passlib (resuelto)
+  D03  ba3d427   fix: corregir todos los errores de Ruff (I001, E712, W291, W292, W293) (resuelto)
 
   Total defectos: 3
 
 MÉTRICA:
   Defectos totales:                       3
-  LOC del proyecto (app + frontend):      2.585
-  KLOC del proyecto:                      2.585
+  LOC del proyecto (app + frontend):      3.575
+  KLOC del proyecto:                      3.575
 
-  Defectos / KLOC = 3 / 2.585 ≈ 1.16 defectos/KLOC
+  Defectos / KLOC = 3 / 3.575 ≈ 0.84 defectos/KLOC
 
 INTERPRETACIÓN (estándares industria):
   < 2 defectos/KLOC   → Calidad alta ✓
   2-5 defectos/KLOC   → Calidad media
   > 5 defectos/KLOC   → Calidad baja
 
-  Resultado: 1.16 defectos/KLOC — CALIDAD ALTA ✓
+  Resultado: 0.84 defectos/KLOC — MUY ALTA CALIDAD ✓
 
 DISTRIBUCIÓN POR GRAVEDAD:
   Críticos:   0
@@ -36,6 +36,6 @@ DISTRIBUCIÓN POR GRAVEDAD:
 ================================================================================
 RESUMEN:
   Defectos encontrados:   3
-  Tasa:                   1.16 defectos/KLOC
-  Calidad:               ALTA (< 2 defectos/KLOC) ✓
+  Tasa:                   0.84 defectos/KLOC
+  Calidad:               MUY ALTA (< 1 defecto/KLOC) ✓
 ================================================================================

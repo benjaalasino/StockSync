@@ -10,41 +10,41 @@ Trabajo de campo integrador de **Ingeniería de Software II — IUA 2026**.
 
 ## Stack Tecnológico
 
-| Capa | Tecnología | Versión |
-|---|---|---|
-| Backend | Python + FastAPI | 3.12 / 0.115 |
-| Frontend | TypeScript + React 18 + Vite | 5.6 / 18.3 / 5.4 |
-| Base de datos | PostgreSQL | 16 |
-| ORM / Migraciones | SQLAlchemy + Alembic | 2.0 / 1.14 |
-| Validación | Pydantic | 2.10 |
-| Autenticación | JWT (python-jose + passlib/bcrypt) | — |
-| Contenedores | Docker + Docker Compose | — |
+| Capa              | Tecnología                         | Versión          |
+| ----------------- | ---------------------------------- | ---------------- |
+| Backend           | Python + FastAPI                   | 3.12 / 0.115     |
+| Frontend          | TypeScript + React 18 + Vite       | 5.6 / 18.3 / 5.4 |
+| Base de datos     | PostgreSQL                         | 16               |
+| ORM / Migraciones | SQLAlchemy + Alembic               | 2.0 / 1.14       |
+| Validación        | Pydantic                           | 2.10             |
+| Autenticación     | JWT (python-jose + passlib/bcrypt) | —                |
+| Contenedores      | Docker + Docker Compose            | —                |
 
 ### Dependencias — Backend (`requirements.txt`)
 
-| Paquete | Versión | Propósito |
-|---|---|---|
-| `fastapi` | 0.115.5 | Framework web |
-| `uvicorn[standard]` | 0.32.1 | Servidor ASGI |
-| `sqlalchemy` | 2.0.36 | ORM |
-| `psycopg2-binary` | 2.9.10 | Driver PostgreSQL |
-| `alembic` | 1.14.0 | Migraciones de BD |
-| `pydantic` / `pydantic-settings` | 2.10.3 | Validación + configuración |
-| `python-jose[cryptography]` | 3.3.0 | JWT |
-| `passlib[bcrypt]` / `bcrypt` | 1.7.4 / 4.0.1 | Hashing de contraseñas |
-| `python-multipart` | 0.0.17 | Soporte form-data |
+| Paquete                          | Versión       | Propósito                  |
+| -------------------------------- | ------------- | -------------------------- |
+| `fastapi`                        | 0.115.5       | Framework web              |
+| `uvicorn[standard]`              | 0.32.1        | Servidor ASGI              |
+| `sqlalchemy`                     | 2.0.36        | ORM                        |
+| `psycopg2-binary`                | 2.9.10        | Driver PostgreSQL          |
+| `alembic`                        | 1.14.0        | Migraciones de BD          |
+| `pydantic` / `pydantic-settings` | 2.10.3        | Validación + configuración |
+| `python-jose[cryptography]`      | 3.3.0         | JWT                        |
+| `passlib[bcrypt]` / `bcrypt`     | 1.7.4 / 4.0.1 | Hashing de contraseñas     |
+| `python-multipart`               | 0.0.17        | Soporte form-data          |
 
 ### Dependencias — Frontend (`package.json`)
 
-| Paquete | Versión | Propósito |
-|---|---|---|
-| `react` / `react-dom` | ^18.3.1 | UI |
-| `react-router-dom` | ^6.27.0 | Enrutamiento |
-| `axios` | ^1.7.7 | Cliente HTTP |
+| Paquete                 | Versión  | Propósito                |
+| ----------------------- | -------- | ------------------------ |
+| `react` / `react-dom`   | ^18.3.1  | UI                       |
+| `react-router-dom`      | ^6.27.0  | Enrutamiento             |
+| `axios`                 | ^1.7.7   | Cliente HTTP             |
 | `@tanstack/react-query` | ^5.59.20 | Cache y estado asíncrono |
-| `react-hot-toast` | ^2.4.1 | Notificaciones |
-| `vite` | ^5.4.11 | Bundler / dev server |
-| `typescript` | ^5.6.3 | Tipado estático |
+| `react-hot-toast`       | ^2.4.1   | Notificaciones           |
+| `vite`                  | ^5.4.11  | Bundler / dev server     |
+| `typescript`            | ^5.6.3   | Tipado estático          |
 
 ---
 
@@ -88,7 +88,7 @@ StockSync/
 │   │   ├── services/       # Lógica de negocio: auth, product, stock
 │   │   └── api/v1/         # Routers: auth, users, products, stock
 │   ├── alembic/            # Migraciones de BD
-│   ├── tests/              # pytest (48 tests)
+│   ├── tests/              # pytest (59 tests)
 │   ├── .coverage           # Reporte de cobertura
 │   ├── requirements.txt
 │   └── Dockerfile
@@ -121,17 +121,18 @@ StockSync/
 ```bash
 git clone https://github.com/benjaalasino/StockSync.git
 cd StockSync
+cp backend/.env.example backend/.env
 docker compose up --build
 ```
 
 Las migraciones se ejecutan automáticamente al iniciar el backend.
 
-| Servicio | URL |
-|---|---|
-| API (Swagger UI) | http://localhost:8000/docs |
-| API (ReDoc) | http://localhost:8000/redoc |
-| Frontend | http://localhost:5173 |
-| PostgreSQL | localhost:5432 |
+| Servicio         | URL                         |
+| ---------------- | --------------------------- |
+| API (Swagger UI) | http://localhost:8000/docs  |
+| API (ReDoc)      | http://localhost:8000/redoc |
+| Frontend         | http://localhost:5173       |
+| PostgreSQL       | localhost:5432              |
 
 ### Sin Docker — Backend
 
@@ -158,7 +159,7 @@ npm run dev
 ```bash
 cd backend
 source .venv/bin/activate
-pytest                          # 48 tests
+pytest                          # 59 tests
 pytest --cov=app --cov-report=term   # con cobertura
 ```
 
@@ -166,12 +167,12 @@ pytest --cov=app --cov-report=term   # con cobertura
 
 Variables de entorno (`.env`):
 
-| Variable | Default | Descripción |
-|---|---|---|
-| `DATABASE_URL` | `postgresql://stocksync:stocksync@db:5432/stocksync` | Conexión a BD |
-| `SECRET_KEY` | `dev-secret-key-change-in-production` | Clave para firmar JWT |
-| `DEBUG` | `false` | Modo debug |
-| `CORS_ORIGINS` | `http://localhost:5173,http://localhost:3000` | Orígenes CORS |
+| Variable       | Default                                              | Descripción           |
+| -------------- | ---------------------------------------------------- | --------------------- |
+| `DATABASE_URL` | `postgresql://stocksync:stocksync@db:5432/stocksync` | Conexión a BD         |
+| `SECRET_KEY`   | `dev-secret-key-change-in-production`                | Clave para firmar JWT |
+| `DEBUG`        | `false`                                              | Modo debug            |
+| `CORS_ORIGINS` | `http://localhost:5173,http://localhost:3000`        | Orígenes CORS         |
 
 ---
 
@@ -179,69 +180,69 @@ Variables de entorno (`.env`):
 
 ### Autenticación
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| POST | `/api/v1/auth/login` | Login → JWT |
-| GET | `/api/v1/auth/me` | Perfil del usuario autenticado |
+| Método | Ruta                 | Descripción                    |
+| ------ | -------------------- | ------------------------------ |
+| POST   | `/api/v1/auth/login` | Login → JWT                    |
+| GET    | `/api/v1/auth/me`    | Perfil del usuario autenticado |
 
 ### Usuarios
 
-| Método | Ruta | Descripción | Rol |
-|---|---|---|---|
-| GET | `/api/v1/users/` | Listar usuarios | Admin |
-| POST | `/api/v1/users/` | Crear usuario | Admin |
+| Método | Ruta             | Descripción     | Rol   |
+| ------ | ---------------- | --------------- | ----- |
+| GET    | `/api/v1/users/` | Listar usuarios | Admin |
+| POST   | `/api/v1/users/` | Crear usuario   | Admin |
 
 ### Productos
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| GET | `/api/v1/products/` | Listar productos con stock |
-| POST | `/api/v1/products/` | Crear producto padre |
-| GET | `/api/v1/products/{id}` | Obtener producto con variantes |
-| PUT | `/api/v1/products/{id}` | Actualizar producto |
-| DELETE | `/api/v1/products/{id}` | Eliminación lógica |
-| POST | `/api/v1/products/{id}/variants` | Agregar variante manual |
-| POST | `/api/v1/products/{id}/variants/generate` | Generar matriz de variantes |
-| PUT | `/api/v1/products/{id}/variants/{variant_id}` | Actualizar variante |
-| GET | `/api/v1/categories/` | Listar categorías |
-| POST | `/api/v1/categories/` | Crear categoría |
-| GET | `/api/v1/attribute-types/` | Listar tipos de atributo |
-| POST | `/api/v1/attribute-types/` | Crear tipo de atributo |
-| POST | `/api/v1/attribute-values/` | Crear valor de atributo |
+| Método | Ruta                                          | Descripción                    |
+| ------ | --------------------------------------------- | ------------------------------ |
+| GET    | `/api/v1/products/`                           | Listar productos con stock     |
+| POST   | `/api/v1/products/`                           | Crear producto padre           |
+| GET    | `/api/v1/products/{id}`                       | Obtener producto con variantes |
+| PUT    | `/api/v1/products/{id}`                       | Actualizar producto            |
+| DELETE | `/api/v1/products/{id}`                       | Eliminación lógica             |
+| POST   | `/api/v1/products/{id}/variants`              | Agregar variante manual        |
+| POST   | `/api/v1/products/{id}/variants/generate`     | Generar matriz de variantes    |
+| PUT    | `/api/v1/products/{id}/variants/{variant_id}` | Actualizar variante            |
+| GET    | `/api/v1/categories/`                         | Listar categorías              |
+| POST   | `/api/v1/categories/`                         | Crear categoría                |
+| GET    | `/api/v1/attribute-types/`                    | Listar tipos de atributo       |
+| POST   | `/api/v1/attribute-types/`                    | Crear tipo de atributo         |
+| POST   | `/api/v1/attribute-values/`                   | Crear valor de atributo        |
 
 ### Stock y Kardex
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| GET | `/api/v1/stock/summary/{variant_id}` | Stock actual de una variante |
-| GET | `/api/v1/stock/movements/{variant_id}` | Historial Kardex |
-| GET | `/api/v1/stock/alerts/low-stock` | Alertas de punto de reorden |
-| POST | `/api/v1/stock/adjust` | Ajuste manual (Admin) |
+| Método | Ruta                                   | Descripción                  |
+| ------ | -------------------------------------- | ---------------------------- |
+| GET    | `/api/v1/stock/summary/{variant_id}`   | Stock actual de una variante |
+| GET    | `/api/v1/stock/movements/{variant_id}` | Historial Kardex             |
+| GET    | `/api/v1/stock/alerts/low-stock`       | Alertas de punto de reorden  |
+| POST   | `/api/v1/stock/adjust`                 | Ajuste manual (Admin)        |
 
 ### Ventas y Compras
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| POST | `/api/v1/stock/sales` | Registrar venta |
-| POST | `/api/v1/stock/purchases` | Crear orden de compra |
-| POST | `/api/v1/stock/purchases/{id}/receive` | Confirmar recepción (Admin) |
-| GET | `/api/v1/suppliers/` | Listar proveedores |
-| POST | `/api/v1/suppliers/` | Crear proveedor |
+| Método | Ruta                                   | Descripción                 |
+| ------ | -------------------------------------- | --------------------------- |
+| POST   | `/api/v1/stock/sales`                  | Registrar venta             |
+| POST   | `/api/v1/stock/purchases`              | Crear orden de compra       |
+| POST   | `/api/v1/stock/purchases/{id}/receive` | Confirmar recepción (Admin) |
+| GET    | `/api/v1/suppliers/`                   | Listar proveedores          |
+| POST   | `/api/v1/suppliers/`                   | Crear proveedor             |
 
 ---
 
 ## RBAC — Roles y Permisos
 
-| Operación | Admin | Operador |
-|---|---|---|
-| Ver productos y stock | ✅ | ✅ |
-| Registrar ventas | ✅ | ✅ |
-| Crear órdenes de compra | ✅ | ✅ |
-| Ver alertas de stock | ✅ | ✅ |
-| Crear/editar productos | ✅ | ❌ |
-| Ajustar stock manualmente | ✅ | ❌ |
-| Gestionar usuarios | ✅ | ❌ |
-| Confirmar recepción de compras | ✅ | ❌ |
+| Operación                      | Admin | Operador |
+| ------------------------------ | ----- | -------- |
+| Ver productos y stock          | ✅    | ✅       |
+| Registrar ventas               | ✅    | ✅       |
+| Crear órdenes de compra        | ✅    | ✅       |
+| Ver alertas de stock           | ✅    | ✅       |
+| Crear/editar productos         | ✅    | ❌       |
+| Ajustar stock manualmente      | ✅    | ❌       |
+| Gestionar usuarios             | ✅    | ❌       |
+| Confirmar recepción de compras | ✅    | ❌       |
 
 ---
 
@@ -295,17 +296,17 @@ erDiagram
 
 Todas las métricas están dentro de los umbrales definidos en el Plan SQA.
 
-| Métrica | Valor | Umbral | Estado |
-|---|---|---|---|
-| LOC (backend) | 1.777 | — | — |
-| LOC (tests) | 1.180 | — | — |
-| LOC (frontend) | 808 | — | — |
-| CC promedio | 1.47 | ≤ 10 | ✅ |
-| CC máxima | 5 | ≤ 10 | ✅ |
-| MI mínimo | 55.21 | ≥ 40 | ✅ |
-| Cobertura | 91.37% | ≥ 80% | ✅ |
-| Defectos/KLOC | 1.16 | < 2 | ✅ |
-| Tests | 48 (100% pasan) | — | ✅ |
+| Métrica        | Valor           | Umbral | Estado |
+| -------------- | --------------- | ------ | ------ |
+| LOC (backend)  | 1.777           | —      | —      |
+| LOC (tests)    | 1.180           | —      | —      |
+| LOC (frontend) | 808             | —      | —      |
+| CC promedio    | 1.47            | ≤ 10   | ✅     |
+| CC máxima      | 5               | ≤ 10   | ✅     |
+| MI mínimo      | 55.21           | ≥ 40   | ✅     |
+| Cobertura      | 91.37%          | ≥ 80%  | ✅     |
+| Defectos/KLOC  | 1.16            | < 2    | ✅     |
+| Tests          | 48 (100% pasan) | —      | ✅     |
 
 Ver reportes detallados en `metricas/`.
 
@@ -313,13 +314,13 @@ Ver reportes detallados en `metricas/`.
 
 ## Hitos del Trabajo de Campo
 
-| # | Fecha | Entregable | Estado |
-|---|---|---|---|
-| 1 | 29/04 | Conformación de grupos + idea | ✅ |
-| 2 | 05/05 | Propuesta de proyecto (PDF) | ✅ |
-| 3 | 20/05 | Plan SQA + métricas (LOC, CC, MI) + linter | ✅ |
-| 4 | 03/06 | Plan de pruebas + casos + cobertura ≥ 60% | ✅ |
-| 5 | 16/06 | Entrega final + RTM + wireframes + defensa oral | ✅ |
+| #   | Fecha | Entregable                                      | Estado |
+| --- | ----- | ----------------------------------------------- | ------ |
+| 1   | 29/04 | Conformación de grupos + idea                   | ✅     |
+| 2   | 05/05 | Propuesta de proyecto (PDF)                     | ✅     |
+| 3   | 20/05 | Plan SQA + métricas (LOC, CC, MI) + linter      | ✅     |
+| 4   | 03/06 | Plan de pruebas + casos + cobertura ≥ 60%       | ✅     |
+| 5   | 16/06 | Entrega final + RTM + wireframes + defensa oral | ✅     |
 
 ---
 
