@@ -1,4 +1,3 @@
-from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
@@ -12,9 +11,9 @@ from app.services import client_service
 router = APIRouter()
 
 
-@router.get("/", response_model=List[ClientResponse])
+@router.get("/", response_model=list[ClientResponse])
 def list_clients(
-    search: Optional[str] = Query(None),
+    search: str | None = Query(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):

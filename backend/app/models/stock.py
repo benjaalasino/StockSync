@@ -7,7 +7,6 @@ de todos los movimientos (StockMovement) asociados a una variante.
 
 import enum
 from datetime import datetime
-from typing import Optional
 
 from sqlalchemy import (
     Boolean,
@@ -147,7 +146,7 @@ class Sale(Base):
     )
 
     @property
-    def client_name(self) -> Optional[str]:
+    def client_name(self) -> str | None:
         return self.client.full_name if self.client else None
 
     def __repr__(self) -> str:

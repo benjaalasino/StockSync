@@ -1,4 +1,3 @@
-from typing import List, Optional
 
 from fastapi import HTTPException
 from sqlalchemy import or_
@@ -8,7 +7,7 @@ from app.models.client import Client
 from app.schemas.client import ClientCreate, ClientUpdate
 
 
-def get_clients(db: Session, search: Optional[str] = None) -> List[Client]:
+def get_clients(db: Session, search: str | None = None) -> list[Client]:
     query = db.query(Client).filter(Client.is_active == True)  # noqa: E712
     if search:
         term = f"%{search}%"
