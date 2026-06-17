@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taller Caja Negra — StockSync Grupo 5</title>
+  <style>
+    /* ── reset & base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0f1117;
+      --surface:  #1a1d27;
+      --surface2: #22263a;
+      --accent:   #6c63ff;
+      --accent2:  #00d4aa;
+      --warn:     #ff6b6b;
+      --text:     #e2e8f0;
+      --muted:    #8892a4;
+      --pass:     #22c55e;
+      --fail:     #ef4444;
+      --limit:    #f59e0b;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 16px;
+      overflow: hidden;
+    }
+
+    /* ── slide container ──────────────────────────────────────── */
+    .deck {
+      width: 100vw; height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 3rem 4rem;
+      gap: 1.4rem;
+      opacity: 0;
+      transform: translateX(60px);
+      transition: opacity .4s ease, transform .4s ease;
+      pointer-events: none;
+      overflow-y: auto;
+    }
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: all;
+    }
+    .slide.exit {
+      opacity: 0;
+      transform: translateX(-60px);
+    }
+
+    /* ── typography ───────────────────────────────────────────── */
+    h1 { font-size: 2.6rem; font-weight: 800; line-height: 1.15; }
+    h2 { font-size: 1.7rem; font-weight: 700; color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: .4rem; }
+    h3 { font-size: 1.1rem; font-weight: 600; color: var(--accent2); }
+    p, li { color: var(--muted); line-height: 1.7; font-size: .95rem; }
+    strong { color: var(--text); }
+    ul { padding-left: 1.4rem; }
+
+    .subtitle { font-size: 1.1rem; color: var(--muted); }
+    .tag {
+      display: inline-block; padding: .2rem .7rem;
+      border-radius: 99px; font-size: .75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .05em;
+    }
+    .tag-accent  { background: var(--accent);  color: #fff; }
+    .tag-accent2 { background: var(--accent2); color: #000; }
+    .tag-warn    { background: var(--warn);    color: #fff; }
+    .tag-limit   { background: var(--limit);   color: #000; }
+
+    /* ── gradient headline ────────────────────────────────────── */
+    .grad {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── tables ───────────────────────────────────────────────── */
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: .82rem;
+    }
+    th {
+      background: var(--surface2);
+      color: var(--accent2);
+      padding: .55rem .8rem;
+      text-align: left; font-weight: 700;
+      font-size: .75rem; text-transform: uppercase; letter-spacing: .05em;
+    }
+    td {
+      padding: .5rem .8rem;
+      border-bottom: 1px solid #ffffff0a;
+      color: var(--text);
+    }
+    tr:hover td { background: #ffffff05; }
+
+    .badge {
+      display: inline-block; padding: .15rem .55rem;
+      border-radius: 6px; font-size: .72rem; font-weight: 700;
+    }
+    .b-pass    { background: #22c55e22; color: var(--pass); border: 1px solid #22c55e44; }
+    .b-fail    { background: #ef444422; color: var(--fail); border: 1px solid #ef444444; }
+    .b-limit   { background: #f59e0b22; color: var(--limit); border: 1px solid #f59e0b44; }
+    .b-invalid { background: #6c63ff22; color: var(--accent); border: 1px solid #6c63ff44; }
+    .b-exc     { background: #ff6b6b22; color: var(--warn); border: 1px solid #ff6b6b44; }
+
+    /* ── code blocks ──────────────────────────────────────────── */
+    pre {
+      background: #0a0c14;
+      border: 1px solid #ffffff10;
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      font-family: 'Fira Code', 'Cascadia Code', monospace;
+      font-size: .78rem;
+      line-height: 1.6;
+      color: #a9b7d0;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .kw  { color: #c792ea; }
+    .fn  { color: #82aaff; }
+    .str { color: #c3e88d; }
+    .cm  { color: #546e7a; font-style: italic; }
+    .num { color: #f78c6c; }
+    .dec { color: var(--accent2); }
+
+    /* ── result terminal ──────────────────────────────────────── */
+    .terminal {
+      background: #060810;
+      border: 1px solid #ffffff10;
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      font-family: monospace;
+      font-size: .8rem;
+      line-height: 1.7;
+    }
+    .t-green { color: var(--pass); }
+    .t-red   { color: var(--fail); }
+    .t-blue  { color: #60a5fa; }
+    .t-gray  { color: var(--muted); }
+    .t-yellow{ color: var(--limit); }
+
+    /* ── stat boxes ───────────────────────────────────────────── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+    }
+    .stat {
+      background: var(--surface2);
+      border: 1px solid #ffffff0a;
+      border-radius: 12px;
+      padding: 1.2rem 1rem;
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 2.2rem; font-weight: 900;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-label { font-size: .75rem; color: var(--muted); margin-top: .3rem; }
+
+    /* ── state diagram ────────────────────────────────────────── */
+    .diagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+      padding: .5rem 0;
+    }
+    .state-box {
+      padding: .6rem 1.2rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: .85rem;
+      white-space: nowrap;
+    }
+    .s-propuesto  { background: #6c63ff33; border: 2px solid var(--accent);  color: var(--accent); }
+    .s-confirmado { background: #00d4aa22; border: 2px solid var(--accent2); color: var(--accent2); }
+    .s-atendido   { background: #22c55e22; border: 2px solid var(--pass);    color: var(--pass); }
+    .s-cancelado  { background: #ef444422; border: 2px solid var(--fail);    color: var(--fail); }
+    .arrow {
+      font-size: 1.2rem; color: var(--muted); padding: 0 .5rem;
+    }
+    .arrow-label {
+      display: flex; flex-direction: column; align-items: center;
+      gap: .1rem;
+    }
+    .a-fn { font-size: .65rem; color: var(--muted); font-family: monospace; }
+
+    /* ── two-col layout ───────────────────────────────────────── */
+    .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+    /* ── callout ──────────────────────────────────────────────── */
+    .callout {
+      background: var(--surface2);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: .8rem 1rem;
+      font-size: .88rem;
+      color: var(--muted);
+    }
+    .callout strong { color: var(--accent2); }
+    .callout-warn { border-color: var(--warn); }
+    .callout-warn strong { color: var(--warn); }
+    .callout-pass { border-color: var(--pass); }
+    .callout-pass strong { color: var(--pass); }
+
+    /* ── checklist ────────────────────────────────────────────── */
+    .checklist { list-style: none; padding: 0; }
+    .checklist li {
+      padding: .4rem 0;
+      display: flex; align-items: center; gap: .6rem;
+      font-size: .88rem;
+    }
+    .checklist li::before {
+      content: '✓';
+      color: var(--pass);
+      font-weight: 900;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* ── coverage bar ─────────────────────────────────────────── */
+    .cov-bar {
+      height: 10px; border-radius: 99px;
+      background: #ffffff10; overflow: hidden;
+      margin-top: .3rem;
+    }
+    .cov-fill {
+      height: 100%; border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    }
+
+    /* ── nav ──────────────────────────────────────────────────── */
+    .nav {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 1rem;
+      background: var(--surface2);
+      border: 1px solid #ffffff12;
+      border-radius: 99px;
+      padding: .5rem 1.2rem;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+    }
+    .nav button {
+      background: none; border: none; cursor: pointer;
+      color: var(--text); font-size: 1.1rem; padding: .2rem .5rem;
+      border-radius: 6px; transition: background .2s;
+    }
+    .nav button:hover { background: #ffffff15; }
+    .nav button:disabled { color: var(--muted); cursor: default; }
+    #counter { font-size: .8rem; color: var(--muted); min-width: 60px; text-align: center; }
+
+    .dots {
+      position: fixed; right: 1.5rem; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: .5rem;
+      z-index: 100;
+    }
+    .dot {
+      width: 8px; height: 8px; border-radius: 99px;
+      background: #ffffff20; cursor: pointer; transition: all .2s;
+    }
+    .dot.active { background: var(--accent); transform: scaleX(2); }
+
+    /* ── progress bar ─────────────────────────────────────────── */
+    .progress {
+      position: fixed; top: 0; left: 0;
+      height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width .4s ease;
+      z-index: 200;
+    }
+
+    /* ── slide number ─────────────────────────────────────────── */
+    .slide-num {
+      position: absolute; top: 1.5rem; right: 2rem;
+      font-size: .75rem; color: var(--muted);
+    }
+
+    /* ── pill badges in tables ────────────────────────────────── */
+    .pill {
+      display: inline-block; padding: .1rem .5rem;
+      border-radius: 99px; font-size: .72rem;
+      font-weight: 700; font-family: monospace;
+    }
+    .p-true    { background: #22c55e22; color: var(--pass); }
+    .p-false   { background: #ef444422; color: var(--fail); }
+    .p-new     { background: #6c63ff22; color: var(--accent); }
+    .p-old     { background: #00d4aa22; color: var(--accent2); }
+    .p-alto    { background: #f59e0b22; color: var(--limit); }
+    .p-bajo    { background: #8892a422; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<div class="deck" id="deck">
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 0 — PORTADA
+  ══════════════════════════════════════════════════════════ -->
+  <div class="slide active" data-slide="0">
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:1.5rem;">
+      <div>
+        <span class="tag tag-accent">Ingeniería de Software II</span>
+        <span class="tag tag-accent2" style="margin-left:.5rem">Hito 4</span>
+      </div>
+      <h1 class="grad">Taller de Pruebas<br>Caja Negra</h1>
+      <p class="subtitle">Ejercicios A · B · C · D — Semana 11</p>
+      <div style="display:flex; flex-direction:column; gap:.3rem; margin-top:.5rem;">
+        <p><strong>Proyecto:</strong> StockSync — Sistema de inventario para indumentaria</p>
+        <p><strong>Grupo 5:</strong> Alasino B. · Calvo T. · Contreras J. · González M.</p>
+        <p><strong>Fecha:</strong> 03/06/2026</p>
+      </div>
+      <div class="stats" style="margin-top:1rem;">
+        <div class="stat"><div class="stat-num">50</div><div class="stat-label">Casos de prueba</div></div>
+        <div class="stat"><div class="stat-num">32</div><div class="stat-label">Tests ejecutados</div></div>
+        <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Passed</div></div>
+        <div class="stat"><div class="stat-num">97%</div><div class="stat-label">Cobertura media</div></div>
+      </div>
+    </div>
+    <div class="slide-num">1 / 12</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 1 — TÉCNICAS UTILIZADAS
+  ══════════════════════════════════════════════════════════ -->
+  <div class="slide" data-slide="1">
+    <h2>Técnicas de caja negra aplicadas</h2>
+    <div class="cols">
+      <div style="display:flex; flex-direction:column; gap:1rem;">
+        <div style="background:var(--surface2); border-radius:12px; padding:1.2rem; border:1px solid #6c63ff44;">
+          <h3>Partición de equivalencia</h3>
+          <p style="margin-top:.5rem;">Divide el dominio de entrada en clases donde se espera el mismo comportamiento. Se elige un representante de cada partición.</p>
+          <p style="margin-top:.5rem; font-size:.8rem;"><strong>Usado en:</strong> Kardex (tipos de movimiento), RBAC (roles)</p>
+        </div>
+        <div style="background:var(--surface2); border-radius:12px; padding:1.2rem; border:1px solid #00d4aa44;">
+          <h3>Valores límite</h3>
+          <p style="margin-top:.5rem;">Prueba los bordes de cada partición: justo debajo, exactamente en, y justo arriba del umbral.</p>
+          <p style="margin-top:.5rem; font-size:.8rem;"><strong>Usado en:</strong> sueldo 100K, stock disponible, reorder_point</p>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:1rem;">
+        <div style="background:var(--surface2); border-radius:12px; padding:1.2rem; border:1px solid #f59e0b44;">
+          <h3>Tabla de decisión</h3>
+          <p style="margin-top:.5rem;">Modela combinaciones de condiciones y sus resultados. Ideal cuando múltiples variables booleanas determinan la salida.</p>
+          <p style="margin-top:.5rem; font-size:.8rem;"><strong>Usado en:</strong> aprobar_prestamo (3 vars → 8 reglas), autenticación, RBAC</p>
+        </div>
+        <div style="background:var(--surface2); border-radius:12px; padding:1.2rem; border:1px solid #ef444444;">
+          <h3>Transición de estados</h3>
+          <p style="margin-top:.5rem;">Modela un sistema como un autómata. Se prueba cada transición válida e inválida desde cada estado posible.</p>
+          <p style="margin-top:.5rem; font-size:.8rem;"><strong>Usado en:</strong> Turno médico (4 estados, 4 transiciones válidas)</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">2 / 12</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 2 — EJERCICIO A: ESPECIFICACIÓN Y TABLA DE DECISIÓN
+  ══════════════════════════════════════════════════════════ -->
+  <div class="slide" data-slide="2">
+    <h2>Ejercicio A — Tabla de decisión: <code style="font-size:.9em;">aprobar_prestamo</code></h2>
+    <div class="callout">
+      <strong>Función:</strong> recibe <code>cliente_nuevo: bool</code>, <code>sueldo: float</code>, <code>garantia: bool</code> y retorna un string con el resultado del préstamo. Sueldo negativo → <code>ValueError</code>.
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>cliente_nuevo</th>
+          <th>sueldo</th>
+          <th>garantia</th>
+          <th>Resultado esperado</th>
+          <th>Regla</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>TC-01</td><td><span class="pill p-new">nuevo</span></td><td><span class="pill p-alto">&gt; 100K</span></td><td>✓</td><td><span class="badge b-pass">APROBADO</span></td><td>Regla 1</td></tr>
+        <tr><td>TC-02</td><td><span class="pill p-new">nuevo</span></td><td><span class="pill p-alto">&gt; 100K</span></td><td>✗</td><td><span class="badge b-limit">APROBADO_LIMITADO</span></td><td>Regla 2</td></tr>
+        <tr><td>TC-03</td><td><span class="pill p-new">nuevo</span></td><td><span class="pill p-bajo">≤ 100K</span></td><td>✓</td><td><span class="badge b-limit">APROBADO_LIMITADO</span></td><td>Regla 3</td></tr>
+        <tr><td>TC-04</td><td><span class="pill p-new">nuevo</span></td><td><span class="pill p-bajo">≤ 100K</span></td><td>✗</td><td><span class="badge b-fail">RECHAZADO</span></td><td>Regla 4</td></tr>
+        <tr><td>TC-05</td><td><span class="pill p-old">existente</span></td><td><span class="pill p-alto">&gt; 100K</span></td><td>✓</td><td><span class="badge b-pass" style="background:#a855f722;color:#a855f7;border-color:#a855f744;">APROBADO_PREMIUM</span></td><td>Regla 5</td></tr>
+        <tr><td>TC-06</td><td><span class="pill p-old">existente</span></td><td><span class="pill p-alto">&gt; 100K</span></td><td>✗</td><td><span class="badge b-pass">APROBADO</span></td><td>Regla 6</td></tr>
+        <tr><td>TC-07</td><td><span class="pill p-old">existente</span></td><td><span class="pill p-bajo">≤ 100K</span></td><td>✓</td><td><span class="badge b-limit">APROBADO_LIMITADO</span></td><td>Regla 7</td></tr>
+        <tr><td>TC-08</td><td><span class="pill p-old">existente</span></td><td><span class="pill p-bajo">≤ 100K</span></td><td>✗</td><td><span class="badge b-fail">RECHAZADO</span></td><td>Regla 8</td></tr>
+      </tbody>
+    </table>
+    <div class="slide-num">3 / 12</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 3 — EJERCICIO A: VALORES LÍMITE + INVÁLIDOS
+  ══════════════════════════════════════════════════════════ -->
+  <div class="slide" data-slide="3">
+    <h2>Ejercicio A — Valores límite del sueldo y casos inválidos</h2>
+    <h3>Umbral: $100.000 con regla estricta <code style="font-size:.85em;">&gt; 100K</code></h3>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>sueldo</th><th>Partición</th><th>Resultado esperado</th><th>Justificación</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>TC-09</td><td><code>99.999,99</code></td><td><span class="pill p-bajo">debajo</span></td><td><span class="badge b-fail">RECHAZADO</span></td><td>Justo debajo del umbral</td></tr>
+        <tr style="background:#f59e0b08;">
+          <td>TC-10</td><td><code>100.000,00</code></td><td><span class="pill p-limit" style="background:#f59e0b22;color:var(--limit)">exacto</span></td><td><span class="badge b-fail">RECHAZADO</span></td>
+          <td>⚠ El más difícil — <code>=</code> pertenece a <code>≤ 100K</code></td>
+        </tr>
+        <tr><td>TC-11</td><td><code>100.000,01</code></td><td><span class="pill p-alto">arriba</span></td><td><span class="badge b-pass">APROBADO</span></td><td>Justo arriba del umbral</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-warn" style="margin-top:.2rem;">
+      <strong>Hallazgo TC-10:</strong> El sueldo exactamente en $100.000 resulta <strong>RECHAZADO</strong>, no APROBADO. La regla es <code>&gt; 100K</code> (estricto). El límite exacto pertenece a la partición baja. Es el error más común al leer la spec.
+    </div>
+    <h3 style="margin-top:.5rem;">Casos inválidos — sueldo negativo → <code>ValueError</code></h3>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>sueldo</th><th>Excepción esperada</th><th>Resultado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>TC-18</td><td><code>-1</code></td><td><code>ValueError</code></td><td><span class="badge b-pass">PASSED ✓</span></td></tr>
+        <tr><td>TC-19</td><td><code>-100</code></td><td><code>ValueError</code></td><td><span class="badge b-pass">PASSED ✓</span></td></tr>
+        <tr><td>TC-20</td><td><code>-0,01</code></td><td><code>ValueError</code></td><td><span class="badge b-pass">PASSED ✓</span></td></tr>
+      </tbody>
+    </table>
+    <div class="slide-num">4 / 12</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 4 — EJERCICIO B: CÓDIGO PYTEST
+  ══════════════════════════════════════════════════════════ -->
+  <div class="slide" data-slide="4">
+    <h2>Ejercicio B — Implementación pytest</h2>
+    <div class="cols">
+      <div>
+        <h3 style="margin-bottom:.6rem;">test_prestamos.py</h3>
+        <pre><span class="kw">import</span> pytest
+<span class="kw">from</span> prestamos <span class="kw">import</span> <span class="fn">aprobar_prestamo</span>
+
+<span class="dec">@pytest.mark.parametrize</span>(<span class="str">"nuevo,sueldo,garantia,esperado"</span>, [
+    <span class="cm"># 8 combinaciones de la tabla de decisión</span>
+    (<span class="kw">True</span>,  <span class="num">150_000</span>, <span class="kw">True</span>,  <span class="str">"APROBADO"</span>),          <span class="cm"># TC-01</span>
+    (<span class="kw">True</span>,  <span class="num">150_000</span>, <span class="kw">False</span>, <span class="str">"APROBADO_LIMITADO"</span>),  <span class="cm"># TC-02</span>
+    (<span class="kw">True</span>,   <span class="num">50_000</span>, <span class="kw">True</span>,  <span class="str">"APROBADO_LIMITADO"</span>),  <span class="cm"># TC-03</span>
+    (<span class="kw">True</span>,   <span class="num">50_000</span>, <span class="kw">False</span>, <span class="str">"RECHAZADO"</span>),           <span class="cm"># TC-04</span>
+    (<span class="kw">False</span>, <span class="num">200_000</span>, <span class="kw">True</span>,  <span class="str">"APROBADO_PREMIUM"</span>),   <span class="cm"># TC-05</span>
+    (<span class="kw">False</span>, <span class="num">200_000</span>, <span class="kw">False</span>, <span class="str">"APROBADO"</span>),            <span class="cm"># TC-06</span>
+    (<span class="kw">False</span>,  <span class="num">80_000</span>, <span class="kw">True</span>,  <span class="str">"APROBADO_LIMITADO"</span>),  <span class="cm"># TC-07</span>
+    (<span class="kw">False</span>,  <span class="num">80_000</span>, <span class="kw">False</span>, <span class="str">"RECHAZADO"</span>),           <span class="cm"># TC-08</span>
+])
+<span class="kw">def</span> <span class="fn">test_decision_aprobacion</span>(nuevo, sueldo, garantia, esperado):
+    <span class="kw">assert</span> <span class="fn">aprobar_prestamo</span>(nuevo, sueldo, garantia) == esperado
+
+<span class="dec">@pytest.mark.parametrize</span>(<span class="str">"sueldo,esperado"</span>, [
+    (<span class="num">99_999.99</span>,  <span class="str">"RECHAZADO"</span>),  <span class="cm"># TC-09</span>
+    (<span class="num">100_000.00</span>, <span class="str">"RECHAZADO"</span>),  <span class="cm"># TC-10 ← el límite exacto</span>
+    (<span class="num">100_000.01</span>, <span class="str">"APROBADO"</span>),   <span class="cm"># TC-11</span>
+])
+<span class="kw">def</span> <span class="fn">test_limite_sueldo</span>(sueldo, esperado):
+    <span class="kw">assert</span> <span class="fn">aprobar_prestamo</span>(<span class="kw">False</span>, sueldo, <span class="kw">False</span>) == esperado
+
+<span class="dec">@pytest.mark.parametrize</span>(<span class="str">"sueldo"</span>, [<span class="num">-1</span>, <span class="num">-100</span>, <span class="num">-0.01</span>])
+<span class="kw">def</span> <span class="fn">test_sueldo_invalido</span>(sueldo):
+    <span class="kw">with</span> pytest.raises(<span class="fn">ValueError</span>):
+        <span class="fn">aprobar_prestamo</span>(<span class="kw">False</span>, sueldo, <span class="kw">False</span>)</pre>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:1rem;">
+        <h3>Resultado de ejecución</h3>
+        <div class="terminal">
+<span class="t-gray">$ pytest tests/test_prestamos.py -v</span>
+<span class="t-green">PASSED</span> test_decision_aprobacion[True-150000-True-APROBADO]
+<span class="t-green">PASSED</span> test_decision_aprobacion[True-150000-False-APROBADO_LIMITADO]
+<span class="t-green">PASSED</span> test_decision_aprobacion[True-50000-True-APROBADO_LIMITADO]
+<span class="t-green">PASSED</span> test_decision_aprobacion[True-50000-False-RECHAZADO]
+<span class="t-green">PASSED</span> test_decision_aprobacion[False-200000-True-APROBADO_PREMIUM]
+<span class="t-green">PASSED</span> test_decision_aprobacion[False-200000-False-APROBADO]
+<span class="t-green">PASSED</span> test_decision_aprobacion[False-80000-True-APROBADO_LIMITADO]
+<span class="t-green">PASSED</span> test_decision_aprobacion[False-80000-False-RECHAZADO]
+<span class="t-green">PASSED</span> test_limite_sueldo[99999.99-RECHAZADO]
+<span class="t-green">PASSED</span> test_limite_sueldo[100000.0-RECHAZADO]
+<span class="t-green">PASSED</span> test_limite_sueldo[100000.01-APROBADO]
+<span class="t-yellow">... +9 casos adicionales ...</span>
+<span class="t-green">PASSED</span> test_sueldo_invalido[-1]
+<span class="t-green">PASSED</span> test_sueldo_invalido[-100]
+<span class="t-green">PASSED</span> test_sueldo_invalido[-0.01]
+
+<span class="t-green">20 passed</span> <span class="t-gray">in 0.04s</span>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:.3rem;">
+            <span style="font-size:.8rem;">Cobertura prestamos.py</span>
+            <span style="font-size:.8rem; color:var(--pass); font-weight:700;">100%</span>
+          </div>
+          <div class="cov-bar"><div class="cov-fill" style="width:100%"></div></div>
+        </div>
+        <ul class="checklist">
+          <li>8 combinaciones de tabla de decisión cubiertas</li>
+          <li>3 valores límite del sueldo</li>
+          <li>3 casos inválidos (sueldo negativo)</li>
+          <li>6 casos adicionales de frontera</li>
+          <li>Total: 20 casos ≥ 15 requeridos</li>
+          <li>Cobertura 100% ≥ 80% requerido</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-num">5 / 12</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 5 — EJERCICIO C: DIAGRAMA DE ESTADOS
+  ══════════════════════════════════════════════════════════ -->
+  <div class="slide" data-slide="5">
+    <h2>Ejercicio C — Transición de estados: <code style="font-size:.9em;">Turno</code></h2>
+    <div class="diagram" style="gap:0; align-items:flex-start; padding:1.5rem 0;">
+      <!-- row 1: PROPUESTO → CONFIRMADO → ATENDIDO -->
+      <div style="display:flex; flex-direction:column; align-items:center; gap:.4rem;">
+        <div class="state-box s-propuesto">PROPUESTO</div>
+        <div style="font-size:.65rem; color:var(--muted); font-family:monospace;">(inicial)</div>
+      </div>
+      <div class="arrow-label" style="align-self:center; padding:0 .5rem;">
+        <span class="arrow">→</span>
+        <span class="a-fn">confirmar()</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:.4rem;">
+        <div class="state-box s-confirmado">CONFIRMADO</div>
+        <div style="font-size:.65rem; color:var(--muted); font-family:monospace;"></div>
+      </div>
+      <div class="arrow-label" style="align-self:center; padding:0 .5rem;">
+        <span class="arrow">→</span>
+        <span class="a-fn">atender()</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:.4rem;">
+        <div class="state-box s-atendido">ATENDIDO</div>
+        <div style="font-size:.65rem; color:var(--pass); font-family:monospace;">(terminal)</div>
+      </div>
+    </div>
+    <!-- cancelar arrows -->
+    <div style="display:flex; gap:3rem; padding:0 0 .5rem 0;">
+      <div style="display:flex; align-items:center; gap:.5rem;">
+        <span style="font-size:.8rem; font-family:monospace; color:var(--muted);">PROPUESTO</span>
+        <span class="arrow" style="color:var(--fail)">→</span>
+        <span style="font-size:.65rem; color:var(--muted); font-family:monospace;">cancelar()</span>
+        <span class="arrow" style="color:var(--fail)">→</span>
+        <div class="state-box s-cancelado" style="padding:.3rem .8rem; font-size:.8rem;">CANCELADO</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:.5rem;">
+        <span style="font-size:.8rem; font-family:monospace; color:var(--muted);">CONFIRMADO</span>
+        <span class="arrow" style="color:var(--fail)">→</span>
+        <span style="font-size:.65rem; color:var(--muted); font-family:monospace;">cancelar()</span>
+        <span class="arrow" style="color:var(--fail)">→</span>
+        <div class="state-box s-cancelado" style="padding:.3rem .8rem; font-size:.8rem;">CANCELADO</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:.5rem; opacity:.5;">
+        <div class="state-box s-cancelado" style="padding:.3rem .8rem; font-size:.8rem;">CANCELADO</div>
+        <span style="font-size:.65rem; color:var(--fail); font-family:monospace;">(terminal)</span>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Estado inicial</th><th>Acción</th><th>Resultado esperado</th><th>Tipo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>TC-S01</td><td><span class="badge" style="background:#6c63ff22;color:var(--accent);border:1px solid #6c63ff44;">PROPUESTO</span></td><td><code>confirmar()</code></td><td><span class="badge" style="background:#00d4aa22;color:var(--accent2);border:1px solid #00d4aa44;">CONFIRMADO</span></td><td><span class="badge b-pass">válida</span></td></tr>
+        <tr><td>TC-S02</td><td><span class="badge" style="background:#6c63ff22;color:var(--accent);border:1px solid #6c63ff44;">PROPUESTO</span></td><td><code>cancelar()</code></td><td><span class="badge" style="background:#ef444422;color:var(--fail);border:1px solid #ef444444;">CANCELADO</span></td><td><span class="badge b-pass">válida</span></td></tr>
+        <tr><td>TC-S03</td><td><span class="badge" style="background:#00d4aa22;color:var(--accent2);border:1px solid #00d4aa44;">CONFIRMADO</span></td><td><code>atender()</code></td><td><span class="badge" style="background:#22c55e22;color:var(--pass);border:1px solid #22c55e44;">ATENDIDO</span></td><td><span class="badge b-pass">válida</span></td></tr>
+        <tr><td>TC-S04</td><td><span class="badge" style="background:#00d4aa22;color:var(--accent2);border:1px solid #00d4aa44;">CONFIRMADO</span></td><td><code>cancelar()</code></td><td><span class="badge" style="background:#ef444422;color:var(--fail);border:1px solid #ef444444;">CANCELADO</span></td><td><span class="badge b-pass">válida</span></td></tr>
+        <tr><td>TC-S05</td><td><span class="badge" style="background:#22c55e22;color:var(--pass);border:1px solid #22c55e44;">ATENDIDO</span></td><td><code>cancelar()</code></td><td><span class="badge b-exc">InvalidTransitionError</span></td><td><span class="badge b-fail">inválida</span></td></tr>
+        <tr><td>TC-S06</td><td><span class="badge" style="background:#22c55e22;color:var(--pass);border:1px solid #22c55e44;">ATENDIDO</span></td><td><code>confirmar()</code></td><td><span class="badge b-exc">InvalidTransitionError</span></td><td><span class="badge b-fail">inválida</span></td></tr>
+        <tr><td>TC-S07</td><td><span class="badge" style="background:#ef444422;color:var(--fail);border:1px solid #ef444444;">CANCELADO</span></td><td><code>confirmar()</code></td><td><span class="badge b-exc">InvalidTransitionError</span></td><td><span class="badge b-fail">inválida</span></td></tr>
+        <tr><td>TC-S08</td><td><span class="badge" style="background:#6c63ff22;color:var(--accent);border:1px solid #6c63ff44;">PROPUESTO</span></td><td><code>atender()</code></td><td><span class="badge b-exc">InvalidTransitionError</span></td><td><span class="badge b-fail">inválida</span></td></tr>
+      </tbody>
+    </table>
+    <div class="slide-num">6 / 12</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 6 — EJERCICIO C: CÓDIGO Y RESULTADOS
+  ══════════════════════════════════════════════════════════ -->
+  <div class="slide" data-slide="6">
+    <h2>Ejercicio C — pytest para transición de estados</h2>
+    <div class="cols">
+      <div>
+        <h3 style="margin-bottom:.6rem;">test_turnos_estado.py</h3>
+        <pre><span class="kw">import</span> pytest
+<span class="kw">from</span> turnos_estado <span class="kw">import</span> <span class="fn">Turno</span>, <span class="fn">InvalidTransitionError</span>
+
+<span class="cm"># ── Transiciones válidas ─────────────────────────────────</span>
+<span class="kw">def</span> <span class="fn">test_s01_propuesto_confirmar</span>():
+    t = <span class="fn">Turno</span>(<span class="str">"PROPUESTO"</span>)
+    t.<span class="fn">confirmar</span>()
+    <span class="kw">assert</span> t.estado == <span class="str">"CONFIRMADO"</span>
+
+<span class="kw">def</span> <span class="fn">test_s03_confirmado_atender</span>():
+    t = <span class="fn">Turno</span>(<span class="str">"CONFIRMADO"</span>)
+    t.<span class="fn">atender</span>()
+    <span class="kw">assert</span> t.estado == <span class="str">"ATENDIDO"</span>
+
+<span class="cm"># ── Transiciones inválidas (parametrize) ─────────────────</span>
+<span class="dec">@pytest.mark.parametrize</span>(<span class="str">"estado_inicial,accion"</span>, [
+    (<span class="str">"ATENDIDO"</span>,  <span class="str">"cancelar"</span>),   <span class="cm"># TC-S05</span>
+    (<span class="str">"ATENDIDO"</span>,  <span class="str">"confirmar"</span>),  <span class="cm"># TC-S06</span>
+    (<span class="str">"CANCELADO"</span>, <span class="str">"confirmar"</span>),  <span class="cm"># TC-S07</span>
+    (<span class="str">"PROPUESTO"</span>, <span class="str">"atender"</span>),    <span class="cm"># TC-S08</span>
+    (<span class="str">"CANCELADO"</span>, <span class="str">"cancelar"</span>),   <span class="cm"># TC-S09</span>
+    (<span class="str">"CANCELADO"</span>, <span class="str">"atender"</span>),    <span class="cm"># TC-S10</span>
+])
+<span class="kw">def</span> <span class="fn">test_transicion_invalida</span>(estado_inicial, accion):
+    t = <span class="fn">Turno</span>(estado_inicial)
+    <span class="kw">with</span> pytest.raises(<span class="fn">InvalidTransitionError</span>):
+        <span class="fn">getattr</span>(t, accion)()
+
+<span class="cm"># ── Flujo completo ───────────────────────────────────────</span>
+<span class="kw">def</span> <span class="fn">test_flujo_completo</span>():
+    t = <span class="fn">Turno</span>()  <span class="cm"># estado por defecto: PROPUESTO</span>
+    t.<span class="fn">confirmar</span>(); t.<span class="fn">atender</span>()
+    <span class="kw">assert</span> t.estado == <span class="str">"ATENDIDO"</span></pre>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:1rem;">
+        <h3>Resultado de ejecución</h3>
+        <div class="terminal">
+<span class="t-gray">$ pytest tests/test_turnos_estado.py -v</span>
+<span class="t-green">PASSED</span> test_s01_propuesto_confirmar
+<span class="t-green">PASSED</span> test_s02_propuesto_cancelar
+<span class="t-green">PASSED</span> test_s03_confirmado_atender
+<span class="t-green">PASSED</span> test_s04_confirmado_cancelar
+<span class="t-green">PASSED</span> test_transicion_invalida[ATENDIDO-cancelar]
+<span class="t-green">PASSED</span> test_transicion_invalida[ATENDIDO-confirmar]
+<span class="t-green">PASSED</span> test_transicion_invalida[CANCELADO-confirmar]
+<span class="t-green">PASSED</span> test_transicion_invalida[PROPUESTO-atender]
+<span class="t-green">PASSED</span> test_transicion_invalida[CANCELADO-cancelar]
+<span class="t-green">PASSED</span> test_transicion_invalida[CANCELADO-atender]
+<span class="t-green">PASSED</span> test_estado_inicial_por_defecto
+<span class="t-green">PASSED</span> test_flujo_completo
+
+<span class="t-green">12 passed</span> <span class="t-gray">in 0.04s</span>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:.3rem;">
+            <span style="font-size:.8rem;">Cobertura turnos_estado.py</span>
+            <span style="font-size:.8rem; color:var(--pass); font-weight:700;">95%</span>
+          </div>
+          <div class="cov-bar"><div class="cov-fill" style="width:95%"></div></div>
+          <p style="font-size:.72rem; color:var(--muted); margin-top:.3rem;">Línea no cubierta: validación de estado inválido en <code>__init__</code> (borde de implementación).</p>
+        </div>
+        <ul class="checklist">
+          <li>4 transiciones válidas cubiertas</li>
+          <li>6 transiciones inválidas cubiertas</li>
+          <li>1 flujo completo end-to-end</li>
+          <li>1 test de estado por defecto</li>
+          <li>Total: 12 casos ≥ 8 requeridos</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-num">7 / 12</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 7 — EJERCICIO D: INTRO STOCKSYNC
+  ══════════════════════════════════════════════════════════ -->
+  <div class="slide" data-slide="7">
+    <h2>Ejercicio D — Casos para StockSync</h2>
+    <p>Se identificaron las <strong>5 funcionalidades más críticas</strong> del sistema y se diseñaron al menos 2 casos por funcionalidad (uno válido + uno límite/inválido).</p>
+    <div class="cols3">
+      <div style="background:var(--surface2); border-radius:12px; padding:1rem; border-top:3px solid var(--accent);">
+        <h3>F1 — Autenticación</h3>
+        <p style="font-size:.8rem; margin-top:.4rem;">Login con JWT. 3 variables: email, password, is_active.</p>
+        <p style="font-size:.75rem; color:var(--muted); margin-top:.4rem;"><strong>Técnica:</strong> Tabla de decisión</p>
+        <p style="font-size:.75rem; color:var(--accent2);"><strong>4 casos</strong></p>
+      </div>
+      <div style="background:var(--surface2); border-radius:12px; padding:1rem; border-top:3px solid var(--accent2);">
+        <h3>F2 — Venta (REQ-F03)</h3>
+        <p style="font-size:.8rem; margin-top:.4rem;">Validación de stock antes del commit. Sin saldos negativos.</p>
+        <p style="font-size:.75rem; color:var(--muted); margin-top:.4rem;"><strong>Técnica:</strong> Valores límite</p>
+        <p style="font-size:.75rem; color:var(--accent2);"><strong>4 casos</strong></p>
+      </div>
+      <div style="background:var(--surface2); border-radius:12px; padding:1rem; border-top:3px solid var(--limit);">
+        <h3>F3 — Kardex (REQ-F02)</h3>
+        <p style="font-size:.8rem; margin-top:.4rem;">Stock = SUM(movimientos). Nunca UPDATE directo.</p>
+        <p style="font-size:.75rem; color:var(--muted); margin-top:.4rem;"><strong>Técnica:</strong> Partición</p>
+        <p style="font-size:.75rem; color:var(--accent2);"><strong>4 casos</strong></p>
+      </div>
+      <div style="background:var(--surface2); border-radius:12px; padding:1rem; border-top:3px solid var(--pass);">
+        <h3>F4 — Reorden (REQ-F04)</h3>
+        <p style="font-size:.8rem; margin-top:.4rem;">Alerta cuando stock ≤ reorder_point.</p>
+        <p style="font-size:.75rem; color:var(--muted); margin-top:.4rem;"><strong>Técnica:</strong> Valores límite</p>
+        <p style="font-size:.75rem; color:var(--accent2);"><strong>3 casos</strong></p>
+      </div>
+      <div style="background:var(--surface2); border-radius:12px; padding:1rem; border-top:3px solid var(--warn);">
+        <h3>F5 — RBAC (REQ-F05)</h3>
+        <p style="font-size:.8rem; margin-top:.4rem;">Ajustes solo para Admin. Operator → 403.</p>
+        <p style="font-size:.75rem; color:var(--muted); margin-top:.4rem;"><strong>Técnica:</strong> Tabla de decisión</p>
+        <p style="font-size:.75rem; color:var(--accent2);"><strong>3 casos</strong></p>
+      </div>
+      <div style="background:var(--surface2); border-radius:12px; padding:1rem; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:.3rem;">
+        <div class="stat-num" style="font-size:2.5rem;">18</div>
+        <div class="stat-label">casos diseñados</div>
+        <div style="font-size:.7rem; color:var(--muted); text-align:center; margin-top:.3rem;">TC-D01 a TC-D18</div>
+      </div>
+    </div>
+    <div class="slide-num">8 / 12</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 8 — EJERCICIO D: F1 + F2
+  ══════════════════════════════════════════════════════════ -->
+  <div class="slide" data-slide="8">
+    <h2>Ejercicio D — F1: Autenticación &amp; F2: Venta</h2>
+    <div class="cols">
+      <div>
+        <h3 style="margin-bottom:.6rem;">F1 — Login con JWT <span class="tag tag-accent" style="font-size:.65rem;">Tabla de decisión</span></h3>
+        <p style="font-size:.78rem; margin-bottom:.5rem;"><code>auth_service.py → authenticate()</code></p>
+        <table>
+          <thead><tr><th>ID</th><th>email</th><th>password</th><th>activo</th><th>Esperado</th></tr></thead>
+          <tbody>
+            <tr><td>TC-D01</td><td>admin</td><td>✓ correcta</td><td>✓</td><td><span class="badge b-pass">JWT token</span></td></tr>
+            <tr><td>TC-D02</td><td>admin</td><td>✗ incorrecta</td><td>✓</td><td><span class="badge b-fail">HTTP 401</span></td></tr>
+            <tr><td>TC-D03</td><td>inactivo</td><td>✓ correcta</td><td>✗</td><td><span class="badge b-fail">HTTP 401</span></td></tr>
+            <tr><td>TC-D04</td><td>no existe</td><td>—</td><td>—</td><td><span class="badge b-fail">HTTP 401</span></td></tr>
+          </tbody>
+        </table>
+        <div class="callout" style="margin-top:.8rem; font-size:.8rem;">
+          Los 3 casos de fallo retornan el <strong>mismo HTTP 401</strong> de forma intencional — no se revela si el email existe (seguridad).
+        </div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:.6rem;">F2 — Venta con validación de stock <span class="tag tag-accent2" style="font-size:.65rem;">Valores límite</span></h3>
+        <p style="font-size:.78rem; margin-bottom:.5rem;"><code>stock_service.py → create_sale() + SELECT FOR UPDATE</code></p>
+        <table>
+          <thead><tr><th>ID</th><th>Disponible</th><th>Solicitado</th><th>Esperado</th></tr></thead>
+          <tbody>
+            <tr><td>TC-D05</td><td>10</td><td>5</td><td><span class="badge b-pass">HTTP 200</span></td></tr>
+            <tr style="background:#00d4aa08;"><td>TC-D06</td><td>10</td><td><strong>10</strong></td><td><span class="badge b-pass">HTTP 200</span> <small style="color:var(--muted);">límite exacto</small></td></tr>
+            <tr style="background:#ef444408;"><td>TC-D07</td><td>10</td><td><strong>11</strong></td><td><span class="badge b-fail">HTTP 409</span> Stock insuf.</td></tr>
+            <tr><td>TC-D08</td><td>0</td><td>1</td><td><span class="badge b-fail">HTTP 409</span> Stock insuf.</td></tr>
+          </tbody>
+        </table>
+        <div class="callout callout-pass" style="margin-top:.8rem; font-size:.8rem;">
+          <strong>TC-D06</strong>: vender exactamente todo el inventario disponible debe funcionar (límite inclusivo del lado válido). Un off-by-one aquí bloquearía ventas legítimas.
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">9 / 12</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 9 — EJERCICIO D: F3 + F4 + F5
+  ══════════════════════════════════════════════════════════ -->
+  <div class="slide" data-slide="9">
+    <h2>Ejercicio D — F3: Kardex · F4: Reorden · F5: RBAC</h2>
+    <div style="display:grid; grid-template-columns: 1.2fr 1fr 1fr; gap:1.2rem;">
+      <div>
+        <h3 style="margin-bottom:.5rem;">F3 — Kardex inmutable <span class="tag tag-limit" style="font-size:.6rem;">Partición</span></h3>
+        <p style="font-size:.74rem; margin-bottom:.4rem;"><code>get_current_stock() = SUM(movimientos)</code></p>
+        <table>
+          <thead><tr><th>ID</th><th>Movimientos</th><th>Stock esperado</th></tr></thead>
+          <tbody>
+            <tr><td>TC-D09</td><td>(ninguno)</td><td><span class="badge b-limit">0</span></td></tr>
+            <tr><td>TC-D10</td><td>[+50, +30]</td><td><span class="badge b-pass">80</span></td></tr>
+            <tr><td>TC-D11</td><td>[+50, -10, -5]</td><td><span class="badge b-pass">35</span></td></tr>
+            <tr><td>TC-D12</td><td>[+20, -20]</td><td><span class="badge b-limit">0 (límite)</span></td></tr>
+          </tbody>
+        </table>
+        <div class="callout" style="margin-top:.6rem; font-size:.77rem;">
+          TC-D12 verifica que el Kardex nunca genera negativos y que <code>SUM()</code> con compensación exacta da cero.
+        </div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:.5rem;">F4 — Alerta reorden <span class="tag tag-accent2" style="font-size:.6rem;">Límite</span></h3>
+        <p style="font-size:.74rem; margin-bottom:.4rem;"><code>get_low_stock_alerts() — regla: stock ≤ reorder_point</code></p>
+        <table>
+          <thead><tr><th>ID</th><th>Stock</th><th>Punto</th><th>Alerta</th></tr></thead>
+          <tbody>
+            <tr><td>TC-D13</td><td>15</td><td>10</td><td><span class="badge b-pass">No</span></td></tr>
+            <tr style="background:#f59e0b08;"><td>TC-D14</td><td><strong>10</strong></td><td>10</td><td><span class="badge b-limit">Sí ← exacto</span></td></tr>
+            <tr><td>TC-D15</td><td>5</td><td>10</td><td><span class="badge b-fail">Sí</span></td></tr>
+          </tbody>
+        </table>
+        <div class="callout callout-warn" style="margin-top:.6rem; font-size:.77rem;">
+          <strong>TC-D14:</strong> stock igual al punto de reorden dispara la alerta (regla <code>≤</code>, inclusivo). Simétrico al caso TC-10 de préstamos.
+        </div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:.5rem;">F5 — RBAC Admin <span class="tag tag-warn" style="font-size:.6rem;">Tabla</span></h3>
+        <p style="font-size:.74rem; margin-bottom:.4rem;"><code>adjust_stock() + require_admin</code></p>
+        <table>
+          <thead><tr><th>ID</th><th>Rol</th><th>Cantidad</th><th>Esperado</th></tr></thead>
+          <tbody>
+            <tr><td>TC-D16</td><td><span class="badge b-pass">admin</span></td><td>+10</td><td><span class="badge b-pass">200 IN</span></td></tr>
+            <tr><td>TC-D17</td><td><span class="badge b-fail">operator</span></td><td>+10</td><td><span class="badge b-fail">HTTP 403</span></td></tr>
+            <tr><td>TC-D18</td><td><span class="badge b-pass">admin</span></td><td>-5</td><td><span class="badge b-limit">200 OUT</span></td></tr>
+          </tbody>
+        </table>
+        <div class="callout" style="margin-top:.6rem; font-size:.77rem;">
+          TC-D18 verifica que un ajuste negativo por admin genera un <code>ADJUSTMENT_OUT</code>, no un error.
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">10 / 12</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 10 — RESULTADOS GLOBALES
+  ══════════════════════════════════════════════════════════ -->
+  <div class="slide" data-slide="10">
+    <h2>Resultados globales</h2>
+    <div class="stats" style="margin-bottom:1.2rem;">
+      <div class="stat"><div class="stat-num">32</div><div class="stat-label">Tests ejecutados</div></div>
+      <div class="stat"><div class="stat-num">32</div><div class="stat-label" style="color:var(--pass);">Passed ✓</div></div>
+      <div class="stat"><div class="stat-num">0</div><div class="stat-label" style="color:var(--fail);">Failed</div></div>
+      <div class="stat"><div class="stat-num">0.09s</div><div class="stat-label">Tiempo total</div></div>
+    </div>
+    <div class="terminal" style="margin-bottom:1rem;">
+<span class="t-gray">$ pytest tests/ -v --tb=short</span>
+
+<span class="t-blue">tests/test_prestamos.py</span>
+<span class="t-green">PASSED</span> test_decision_aprobacion[...] <span class="t-gray">×8</span>
+<span class="t-green">PASSED</span> test_limite_sueldo[...]        <span class="t-gray">×3</span>
+<span class="t-green">PASSED</span> test_casos_adicionales[...]     <span class="t-gray">×6</span>
+<span class="t-green">PASSED</span> test_sueldo_invalido[...]       <span class="t-gray">×3</span>
+
+<span class="t-blue">tests/test_turnos_estado.py</span>
+<span class="t-green">PASSED</span> test_s01_propuesto_confirmar
+<span class="t-green">PASSED</span> test_s02_propuesto_cancelar
+<span class="t-green">PASSED</span> test_s03_confirmado_atender
+<span class="t-green">PASSED</span> test_s04_confirmado_cancelar
+<span class="t-green">PASSED</span> test_transicion_invalida[...]    <span class="t-gray">×6</span>
+<span class="t-green">PASSED</span> test_estado_inicial_por_defecto
+<span class="t-green">PASSED</span> test_flujo_completo
+
+<span class="t-green">32 passed</span> <span class="t-gray">in 0.09s</span>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+      <div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:.3rem;">
+          <span>prestamos.py</span><span style="color:var(--pass); font-weight:700;">100%</span>
+        </div>
+        <div class="cov-bar"><div class="cov-fill" style="width:100%"></div></div>
+      </div>
+      <div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:.3rem;">
+          <span>turnos_estado.py</span><span style="color:var(--pass); font-weight:700;">95%</span>
+        </div>
+        <div class="cov-bar"><div class="cov-fill" style="width:95%"></div></div>
+      </div>
+    </div>
+    <div class="slide-num">11 / 12</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 11 — PLENARIO Y CONCLUSIONES
+  ══════════════════════════════════════════════════════════ -->
+  <div class="slide" data-slide="11">
+    <h2>Plenario — Respuestas del grupo</h2>
+    <div style="display:flex; flex-direction:column; gap:1rem;">
+      <div class="callout callout-warn">
+        <strong>1. Caso más difícil de identificar (Ejercicio A)</strong><br>
+        <p style="margin-top:.4rem;"><strong>TC-10 — sueldo exactamente en $100.000,00 → RECHAZADO.</strong>
+        La regla es <code>&gt; 100K</code> (estricto), por lo que el límite exacto pertenece a la partición baja.
+        Es fácil asumir que $100K "pasa el umbral", pero la condición no lo incluye.
+        Este tipo de error off-by-one en los límites es uno de los más frecuentes en producción.</p>
+      </div>
+      <div class="callout">
+        <strong>2. Inconsistencias detectadas en la spec</strong><br>
+        <p style="margin-top:.4rem;">Ninguna. La spec de <code>aprobar_prestamo</code> es internamente consistente.
+        La única ambigüedad potencial era el tratamiento del límite exacto de sueldo,
+        pero la condición <code>&gt; 100K</code> lo resuelve sin ambigüedad.
+        El ejercicio reforzó que leer la spec con precisión es crítico antes de escribir tests.</p>
+      </div>
+      <div class="callout callout-pass">
+        <strong>3. Técnica más usada en StockSync (Ejercicio D)</strong><br>
+        <p style="margin-top:.4rem;"><strong>Valores límite</strong>, porque el dominio gira en torno a umbrales numéricos con consecuencias de negocio concretas:
+        <code>stock_disponible vs. cantidad_solicitada</code> (venta legítima vs. HTTP 409) y
+        <code>stock_actual vs. reorder_point</code> (alerta activa o no).
+        Un off-by-one en cualquiera de estos puntos afecta directamente al inventario real.</p>
+      </div>
+    </div>
+    <div style="margin-top:.5rem; display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem;">
+      <div style="background:var(--surface2); border-radius:10px; padding:.8rem; text-align:center;">
+        <div style="font-size:1.4rem; font-weight:900; color:var(--accent);">A+B</div>
+        <div style="font-size:.7rem; color:var(--muted);">Tabla decisión<br>20 casos · 100% cov</div>
+      </div>
+      <div style="background:var(--surface2); border-radius:10px; padding:.8rem; text-align:center;">
+        <div style="font-size:1.4rem; font-weight:900; color:var(--accent2);">C</div>
+        <div style="font-size:.7rem; color:var(--muted);">Estados<br>12 casos · 95% cov</div>
+      </div>
+      <div style="background:var(--surface2); border-radius:10px; padding:.8rem; text-align:center;">
+        <div style="font-size:1.4rem; font-weight:900; color:var(--limit);">D</div>
+        <div style="font-size:.7rem; color:var(--muted);">StockSync<br>18 casos diseñados</div>
+      </div>
+      <div style="background:var(--surface2); border-radius:10px; padding:.8rem; text-align:center;">
+        <div style="font-size:1.4rem; font-weight:900; color:var(--pass);">50</div>
+        <div style="font-size:.7rem; color:var(--muted);">Total casos<br>taller completo</div>
+      </div>
+    </div>
+    <div class="slide-num">12 / 12</div>
+  </div>
+
+</div><!-- /deck -->
+
+<!-- ── navegación ──────────────────────────────────────────────── -->
+<div class="nav">
+  <button id="prev" onclick="go(-1)" disabled>◀</button>
+  <span id="counter">1 / 12</span>
+  <button id="next" onclick="go(1)">▶</button>
+</div>
+
+<div class="dots" id="dots"></div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total  = slides.length;
+  let cur = 0;
+
+  // build dots
+  const dotsEl = document.getElementById('dots');
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => go(i - cur);
+    dotsEl.appendChild(d);
+  });
+
+  function go(delta) {
+    const next = Math.max(0, Math.min(total - 1, cur + delta));
+    if (next === cur) return;
+    slides[cur].classList.remove('active');
+    slides[cur].classList.add('exit');
+    setTimeout(() => slides[cur - delta > cur ? cur - delta : cur].classList.remove('exit'), 400);
+    cur = next;
+    slides[cur].classList.add('active');
+    update();
+  }
+
+  function update() {
+    document.getElementById('counter').textContent = `${cur + 1} / ${total}`;
+    document.getElementById('prev').disabled = cur === 0;
+    document.getElementById('next').disabled = cur === total - 1;
+    document.getElementById('progress').style.width = `${((cur + 1) / total) * 100}%`;
+    dotsEl.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+  }
+
+  // keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') go(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp') go(-1);
+  });
+
+  // touch swipe
+  let tx = 0;
+  document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+  document.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+  });
+
+  update();
+</script>
+</body>
+</html>
